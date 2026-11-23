@@ -58,6 +58,19 @@ Official upstream release mirrors:
 
 The application binary uses ApkStart icons and version metadata. These figures and package names describe upstream builds and may vary by release.
 
+## Interface language and translations
+
+ApkStart now supports an independent **App Language** setting:
+
+- **English** is the default interface language.
+- **Simplified Chinese** is included for switching back to the original interface.
+- **Any other language** can be added with an importable JSON translation pack. Missing translations fall back to English, so languages without a complete pack are not yet fully translated.
+- The language selector is under **Settings → General & Installation → App Language**. Switching happens immediately, and your selection persists across launches.
+
+This is separate from **Android system language**, which changes the language inside Android rather than the Windows app. See [language-pack instructions and translation guide](docs/languages.md).
+
+The repository contains updated source files, not a rebuilt installer. Existing installations must be replaced by a build made from this fork before the English UI appears.
+
 ## Getting started
 
 1. Download an appropriate Windows package from an upstream release.
