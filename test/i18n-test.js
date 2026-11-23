@@ -11,7 +11,8 @@ const read = (file) => fs.readFileSync(path.join(ROOT, file), 'utf8');
 // The localization module must work in Electron without remote services or npm i18n packages.
 function createEngine(persisted = new Map(), windowLanguage = null) {
   const window = { alert() {}, confirm() { return true; }, prompt() { return null; },
-    location: { search: windowLanguage ? '?lang=' + encodeURIComponent(windowLanguage) : '' } };
+    location: { search: windowLanguage ? '?lang=' + encodeURIComponent(windowLanguage) : '' },
+    apkstart: { interfaceDictionary: { '正在准备安卓运行时…': 'Preparing Android runtime…', '后端专用消息': 'Backend-only message' } } };
   const document = {
     readyState: 'loading',
     documentElement: { lang: 'en-US' },
@@ -38,6 +39,8 @@ const { t, document, persisted } = createEngine();
 assert.equal(t.getLocale(), 'en-US');
 assert.equal(t.translate('Settings'), 'Settings');
 assert.equal(t.translate('设置'), 'Settings');
+assert.equal(t.translate('正在准备安卓运行时…'), 'Preparing Android runtime…');
+assert.equal(t.translate('后端专用消息'), 'Backend-only message');
 assert.equal(t.setLocale('zh-CN'), true);
 assert.equal(document.documentElement.lang, 'zh-CN');
 assert.equal(t.translate('Settings'), '设置');
@@ -73,6 +76,13 @@ assert.match(html, /id="localePackFile"/);
 assert.ok(html.indexOf('<script src="i18n.js"></script>') < html.indexOf('<script src="app.js"></script>'));
 
 const store = require('../src/core/store');
+const installer = read('src/core/installer.js');
+assert.match(installer, /Preparing Android runtime…/);
+assert.match(installer, /ui\('Preparing Android runtime…', '正在准备安卓运行时…'\)/);
+const provision = read('src/core/provision.js');
+assert.match(provision, /Downloading Android platform-tools/);
+const native = read('src/main.js');
+assert.match(native, /'install:error', 'update:progress'/);
 assert.equal(store.DEFAULT_SETTINGS.ui.language, 'en-US');
 assert.equal(store.DEFAULT_SETTINGS.engine.locale, 'en-US');
 
