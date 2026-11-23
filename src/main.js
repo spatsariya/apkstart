@@ -970,8 +970,11 @@ function openManual(payload = {}) {
         if (/^https?:\/\//i.test(url)) shell.openExternal(url);
       });
     }
-    manualWindow.setTitle(`ApkStart 使用手册 · ${target.title}`);
-    manualWindow.loadFile(path.join(__dirname, 'ui', 'manual.html'), { hash: target.anchor });
+    const uiLanguage = store.getSettings().ui?.language || 'en-US';
+    const manualName = uiLanguage === 'zh-CN' ? 'manual.html' : 'manual-en.html';
+    manualWindow.setTitle(uiLanguage === 'zh-CN'
+      ? `ApkStart 使用手册 · ${target.title}` : 'ApkStart User Guide and Troubleshooting');
+    manualWindow.loadFile(path.join(__dirname, 'ui', manualName), { hash: target.anchor });
     manualWindow.once('ready-to-show', () => {
       if (!manualWindow || manualWindow.isDestroyed()) return;
       manualWindow.show();
