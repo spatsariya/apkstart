@@ -42,6 +42,8 @@ const DEFAULT_SETTINGS = {
    * 这里只记「被用户关掉的 id」——默认全开，坏了能一键关，不用删文件。
    */
   drivers: { state: {}, disabled: [] },
+  // Independent ApkStart interface language. Android guest language is engine.locale.
+  ui: { language: 'en-US' },
   engine: {
     // 只有一个运行时：自带运行时（builtin）。字段保留是为了兼容老 settings.json 的合并，
     // 读设置时会被强制写回 'builtin'（见 getSettings 的迁移）。
