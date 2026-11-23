@@ -8,6 +8,8 @@ const fs = require('fs');
 const path = require('path');
 
 const store = require('./core/store');
+// Translate native Windows menus and dialogs. Additional imported locales use English fallback.
+const uiText = (english, chinese) => store.getSettings().ui?.language === 'zh-CN' ? chinese : english;
 const { Runtime } = require('./core/engine');
 const { Installer } = require('./core/installer');
 const { Sharer } = require('./core/sharer');
@@ -900,7 +902,7 @@ function createWindow({ show = true } = {}) {
     if (quitting) return;
     e.preventDefault();
     mainWindow.hide();
-    notify('ApkStart 仍在后台运行', '点击托盘图标可重新打开；右键托盘可退出。');
+    notify(uiText('ApkStart is still running', 'ApkStart 仍在后台运行'), uiText('Click the tray icon to reopen or right-click to exit.', '点击托盘图标可重新打开；右键托盘可退出。'));
   });
 
   if (IS_DEV) mainWindow.webContents.openDevTools({ mode: 'detach' });
@@ -1103,15 +1105,15 @@ function buildTray() {
       ? ((store.getApp(currentAppPkg) || {}).label || currentAppPkg)
       : '';
     const menu = Menu.buildFromTemplate([
-      { label: '打开 ApkStart', click: () => showWindow() },
-      { label: '使用手册', click: () => openManual({ topic: 'overview', reason: 'tray' }) },
+      { label: uiText('Open ApkStart', '打开 ApkStart'), click: () => showWindow() },
+      { label: uiText('User guide', '使用手册'), click: () => openManual({ topic: 'overview', reason: 'tray' }) },
       { type: 'separator' },
       ...(apps.length
         ? apps.map((a) => ({ label: a.label, click: () => runLaunch(a.package) }))
-        : [{ label: '还没有安装应用', enabled: false }]),
+        : [{ label: uiText('No installed apps', '还没有安装应用'), enabled: false }]),
       { type: 'separator' },
       {
-        label: hasRunning ? `关闭当前应用（${runningLabel}）` : '关闭当前应用',
+        label: hasRunning ? uiText(`Close current app (${runningLabel})`, `关闭当前应用（${runningLabel}）`) : uiText('Close current app', '关闭当前应用'),
         enabled: !!hasRunning,
         click: () => {
           const pkg = currentAppPkg;
@@ -1121,19 +1123,19 @@ function buildTray() {
         },
       },
       {
-        label: wantLandscapeFor(currentAppPkg) ? '切回竖屏（需重启运行时）' : '切换横屏（需重启运行时）',
+        label: wantLandscapeFor(currentAppPkg) ? uiText('Switch to portrait (restart required)', '切回竖屏（需重启运行时）') : uiText('Switch to landscape (restart required)', '切换横屏（需重启运行时）'),
         enabled: !!currentAppPkg,
         click: () => { rotateCurrentApp().catch(() => {}); },
       },
       {
-        label: displaySettings().mode === 'fullscreen' ? '切回竖屏窗口' : '全屏（自适应屏幕）',
+        label: displaySettings().mode === 'fullscreen' ? uiText('Return to portrait window', '切回竖屏窗口') : uiText('Fullscreen (fit screen)', '全屏（自适应屏幕）'),
         click: () => { toggleDisplayMode(); },
       },
-      { label: '重建桌面/开始菜单快捷方式', click: () => { installer.ensureShortcuts().catch(() => {}); } },
-      { label: '同步共享目录', click: () => sharer.sync() },
-      { label: '设置', click: () => { showWindow(); send('ui:navigate', 'settings'); } },
+      { label: uiText('Rebuild Desktop / Start menu shortcuts', '重建桌面/开始菜单快捷方式'), click: () => { installer.ensureShortcuts().catch(() => {}); } },
+      { label: uiText('Sync shared folder', '同步共享目录'), click: () => sharer.sync() },
+      { label: uiText('Settings', '设置'), click: () => { showWindow(); send('ui:navigate', 'settings'); } },
       {
-        label: updateInfo && updateInfo.hasUpdate ? `发现新版本 ${updateInfo.tag}` : '检查更新',
+        label: updateInfo && updateInfo.hasUpdate ? uiText(`New version ${updateInfo.tag}`, `发现新版本 ${updateInfo.tag}`) : uiText('Check for updates', '检查更新'),
         click: async () => {
           showWindow();
           send('ui:navigate', 'settings');
@@ -1142,22 +1144,22 @@ function buildTray() {
           if (info && info.hasUpdate && info.asset) {
             const r = await dialog.showMessageBox(mainWindow || undefined, {
               type: 'question',
-              title: '发现新版本',
-              message: `ApkStart ${info.tag} 已发布，当前版本 v${app.getVersion()}。现在更新吗？`,
+              title: uiText('New version available', '发现新版本'),
+              message: uiText(`ApkStart ${info.tag} is available. Current version: v${app.getVersion()}. Update now?`, `ApkStart ${info.tag} 已发布，当前版本 v${app.getVersion()}。现在更新吗？`),
               detail: (info.notes || '').slice(0, 600),
-              buttons: ['立即更新', '稍后'],
+              buttons: [uiText('Update now', '立即更新'), uiText('Later', '稍后')],
               defaultId: 0,
               cancelId: 1,
             });
             if (r.response === 0) runUpdate();
           } else if (info && !info.hasUpdate) {
-            notify('已是最新版本', `ApkStart v${app.getVersion()}`);
+            notify(uiText('Already up to date', '已是最新版本'), `ApkStart v${app.getVersion()}`);
           }
         },
       },
       { type: 'separator' },
       {
-        label: '退出',
+        label: uiText('Exit', '退出'),
         click: async () => {
           try { appWin.close({ keepApp: true }); } catch (_) { /* ignore */ }
           quitting = true;
@@ -1167,7 +1169,7 @@ function buildTray() {
     ]);
     tray.setContextMenu(menu);
   };
-  tray.setToolTip('ApkStart — 安卓应用运行器');
+  tray.setToolTip(uiText('ApkStart — Android App Launcher', 'ApkStart — 安卓应用运行器'));
   // Windows 托盘的惯例是单击就打开主窗口（双击当然也可以）。
   // 之前只绑了 double-click，用户单击没反应，会以为托盘图标坏了。
   // 右键才出菜单，所以这里单击直接 showWindow 不会和菜单冲突。
