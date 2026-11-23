@@ -1021,7 +1021,7 @@ function send(channel, payload) {
   let output = payload;
   if (channel === 'runtime:log' && typeof payload === 'string') {
     output = translateDisplayText(payload);
-  } else if (['toast', 'install:progress', 'update:progress'].includes(channel) && payload && typeof payload === 'object') {
+  } else if (['toast', 'install:progress', 'install:error', 'update:progress'].includes(channel) && payload && typeof payload === 'object') {
     output = { ...payload };
     for (const key of ['title', 'message', 'body']) {
       if (typeof output[key] === 'string') output[key] = translateDisplayText(output[key]);
