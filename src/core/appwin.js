@@ -184,7 +184,9 @@ class AppWindow {
       },
     });
 
-    this.win.loadFile(path.join(__dirname, '..', 'ui', 'shell.html'));
+    this.win.loadFile(path.join(__dirname, '..', 'ui', 'shell.html'), {
+      query: { lang: store.getSettings().ui?.language || 'en-US' },
+    });
     // 页面标题会把窗口标题改成 shell.html 的 <title>，任务栏就认不出是哪个应用了，
     // 这里挡住，让 OS 标题一直等于应用名（任务栏悬浮提示、Alt+Tab 都靠它）。
     this.win.webContents.on('page-title-updated', (e) => {
