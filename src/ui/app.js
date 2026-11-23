@@ -1048,6 +1048,8 @@ async function refreshDrivers() {
 }
 
 function fillSettings(s) {
+  window.ApkStartI18n?.fillSelector($('setUiLanguage'));
+  if ($('setUiLanguage')) $('setUiLanguage').value = (s.ui && s.ui.language) || 'en-US';
   syncBackendFields();
   refreshDrivers().catch(() => {});
   $('setAdbPath').value = s.adbPath || '';
@@ -1701,6 +1703,29 @@ function bindSettings() {
   }
   if ($('setFastDns')) {
     $('setFastDns').addEventListener('change', (e) => save({ engine: { fastDns: e.target.checked } }));
+  }
+  if ($('setUiLanguage')) {
+    $('setUiLanguage').addEventListener('change', async (e) => {
+      const lang = e.target.value;
+      if (!window.ApkStartI18n?.setLocale(lang)) return;
+      state.settings = await api.setSettings({ ui: { language: lang } });
+    });
+  }
+  if ($('btnImportLocale') && $('localePackFile')) {
+    $('btnImportLocale').addEventListener('click', () => $('localePackFile').click());
+    $('localePackFile').addEventListener('change', async (event) => {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+      try {
+        const pack = JSON.parse(await file.text());
+        const result = window.ApkStartI18n.installPack(pack);
+        window.ApkStartI18n.setLocale(result.locale);
+        state.settings = await api.setSettings({ ui: { language: result.locale } });
+        toast({ title: 'Language pack imported', body: result.name, type: 'ok' });
+      } catch (err) {
+        toast({ title: 'Could not import language pack', body: err.message, type: 'error' });
+      } finally { event.target.value = ''; }
+    });
   }
   if ($('setLocale')) {
     $('setLocale').addEventListener('change', async (e) => {
@@ -2514,6 +2539,7 @@ async function init() {
   bindAndroid();
   bindWelcome();
   state.settings = await api.getSettings();
+  window.ApkStartI18n?.setLocale((state.settings.ui && state.settings.ui.language) || 'en-US');
   await refreshStatus();
   await refreshApps();
   refreshAndroid();
