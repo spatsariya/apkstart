@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ApkStart User Guide and Troubleshooting</title><style>:root{color-scheme:light;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}*{box-sizing:border-box}body{margin:0;background:#fff;color:#1f2328}.layout{max-width:1240px;margin:auto;display:grid;grid-template-columns:270px minmax(0,1fr);gap:32px}aside{position:sticky;top:0;max-height:100vh;overflow:auto;background:#f6f8fa;border-right:1px solid #d0d7de;padding:20px}aside h2{font-size:18px;margin:0 0 12px}aside input{width:100%;border:1px solid #d0d7de;border-radius:8px;padding:9px;margin-bottom:12px}aside a{display:block;color:#57606a;padding:5px 7px;font-size:13px;text-decoration:none;border-radius:5px}aside a:hover{background:#eaf4ff;color:#0969da}main{padding:28px 35px 80px;min-width:0}h1{font-size:31px;border-bottom:1px solid #d0d7de;padding-bottom:14px}h2{border-bottom:1px solid #d0d7de;padding-bottom:10px;margin-top:42px;scroll-margin-top:20px}h3{margin-top:30px;scroll-margin-top:20px}p,li{line-height:1.75}table{border-collapse:collapse;width:100%;margin:15px 0;display:block;overflow:auto}td,th{padding:9px 14px;border:1px solid #d0d7de;text-align:left}th{background:#f6f8fa}code,kbd{background:#eef1f4;padding:1px 5px;border-radius:4px}pre{background:#f6f8fa;padding:14px;overflow:auto;border-radius:8px}pre code{background:none}a{color:#0969da}button{border:1px solid #aaa;border-radius:6px;padding:8px 15px;cursor:pointer;background:#fff}.top{display:flex;justify-content:space-between;align-items:center;gap:15px}@media(max-width:800px){.layout{display:block}aside{position:static;max-height:300px;border-bottom:1px solid #ddd}main{padding:20px}}@media print{aside,button{display:none!important}.layout{display:block}main{padding:0}}</style></head>
+<body><div class="layout"><aside><h2>Contents</h2><input id="filter" placeholder="Find a topic" type="search">
+<nav id="toc"><a href="#apkstart-产品使用手册与问题解决方案">ApkStart User Guide and Troubleshooting</a>
+<a href="#1-30-秒看懂-apkstart">1. ApkStart in 30 seconds</a>
+<a href="#2-安装与首次启动">2. Installation and first launch</a>
+<a href="#2-1-选择适合你的版本">2.1 Choosing a release</a>
+<a href="#2-2-首次启动会发生什么">2.2 What happens on first launch</a>
+<a href="#3-日常使用">3. Everyday usage</a>
+<a href="#3-1-安装应用">3.1 Installing apps</a>
+<a href="#3-2-打开应用">3.2 Launching apps</a>
+<a href="#3-3-窗口与显示">3.3 Windows, orientation and display</a>
+<a href="#3-4-快捷键">3.4 Shortcuts and controls</a>
+<a href="#3-5-文件互通-windows-安卓">3.5 Shared folders between Windows and Android</a>
+<a href="#3-6-设置页导航">3.6 Finding settings</a>
+<a href="#3-7-在线更新">3.7 Updating</a>
+<a href="#4-理解三个核心概念-看懂报错的关键">4. Runtime, acceleration and ARM compatibility</a>
+<a href="#5-遇到问题先做这一步-体检与自动检测">5. Check the system first</a>
+<a href="#5-1-本机体检-自动配置">5.1 Preflight and automatic configuration</a>
+<a href="#5-2-自动检测-自动-debug">5.2 Automatic diagnostics and network repair</a>
+<a href="#5-3-导出诊断报告">5.3 Exporting a report</a>
+<a href="#5-4-内置使用手册与自动教程">5.4 Context-sensitive help</a>
+<a href="#6-常见问题解决方案">6. Troubleshooting common issues</a>
+<a href="#6-1-提示-未启用硬件加速-开机很慢">6.1 Hardware acceleration disabled / Android boots slowly</a>
+<a href="#6-2-安装失败-install_failed_">6.2 APK installation failed (INSTALL_FAILED_*)</a>
+<a href="#6-3-系统镜像没有-arm-转译层-arm-应用装不上或闪退">6.3 ARM translation missing / ARM-only app crashes</a>
+<a href="#6-4-adb-未授权-允许-usb-调试">6.4 adb unauthorized or offline</a>
+<a href="#6-5-双击图标没反应-一直转圈-出现带旋转按钮的窗口">6.5 Shortcut does nothing / spinner / unexpected window</a>
+<a href="#6-6-其它启动类问题速查表">6.6 Other startup issues</a>
+<a href="#6-7-应用没有声音-声音很小">6.7 No sound / quiet audio</a>
+<a href="#6-8-商店版启动失败-0xc0000135-dll-加载失败">6.8 Store edition fails with 0xC0000135 or missing DLL</a>
+<a href="#6-9-应用用不到麦克风-无法语音通话录音">6.9 Microphone unavailable</a>
+<a href="#6-10-独显-核显渲染-显卡偏好">6.10 Choosing discrete vs integrated graphics</a>
+<a href="#7-命令行参考">7. Command-line reference</a>
+<a href="#8-数据与目录说明">8. Data and storage directories</a>
+<a href="#9-获取帮助与反馈">9. Getting help and reporting issues</a></nav></aside><main><div class="top"><span>ApkStart • English User Guide</span><button onclick="window.print()">Print / Save as PDF</button></div><section><h1 id="apkstart-产品使用手册与问题解决方案">ApkStart User Guide and Troubleshooting</h1>
+<p>ApkStart lets you install Android APK files on Windows, launch apps using their own desktop shortcuts, and run apps in independently managed windows. This guide describes setup, common tasks, and practical fixes.</p><p><strong>Platform:</strong> Windows 10/11 x64. <strong>Project:</strong> <a href="https://github.com/RoutineMiku/apkstart">RoutineMiku/apkstart</a>. Fork: <a href="https://github.com/spatsariya/apkstart">spatsariya/apkstart</a>.</p></section>
+<section><h2 id="1-30-秒看懂-apkstart">1. ApkStart in 30 seconds</h2>
+<ol><li>Install the APK installer or extract the portable edition.</li><li>Run ApkStart and complete Android runtime setup if asked.</li><li>Drag an <code>.apk</code> file into ApkStart, or choose <strong>Install APK</strong>.</li><li>Launch the installed app using its desktop or Start menu shortcut.</li><li>Use <kbd>F11</kbd> for fullscreen and open <strong>Settings</strong> to adjust controls and performance.</li></ol></section>
+<section><h2 id="2-安装与首次启动">2. Installation and first launch</h2>
+<p>The <strong>full portable</strong>, <strong>installer</strong>, and <strong>MSIX</strong> builds can contain a complete runtime. The <strong>lightweight portable</strong> download fetches the Android Emulator and system image at first use.</p><p>Releases: <a href="https://github.com/RoutineMiku/apkstart/releases">GitHub</a> or <a href="https://gitee.com/daily-miku/apkstart/releases">Gitee</a>.</p><p>On first launch, select <strong>One-click setup</strong> when needed. Wait for adb, Android Emulator, and the Android 14 system image to be ready. An initial Android boot may take several minutes on slower systems.</p></section>
+<section><h3 id="2-1-选择适合你的版本">2.1 Choosing a release</h3>
+<table><tr><th>Edition</th><th>When to choose it</th></tr><tr><td>Installer</td><td>Normal installation, shortcuts, uninstaller, bundled runtime</td></tr><tr><td>Full portable</td><td>Run without installation or first-run downloads</td></tr><tr><td>Lightweight portable</td><td>Small initial download; runtime installed when needed</td></tr><tr><td>MSIX</td><td>Store-style installation and updates</td></tr></table></section>
+<section><h3 id="2-2-首次启动会发生什么">2.2 What happens on first launch</h3>
+<p>The app checks whether Android tools, a system image, and hardware acceleration are available. When necessary, it downloads components and prepares an Android virtual disk. Your Android data, installed apps and snapshots are stored outside the portable program directory.</p></section>
+<section><h2 id="3-日常使用">3. Everyday usage</h2>
+<p>Use the <strong>Install APK</strong> button, drag and drop an APK, or enable the Windows <code>.apk</code> file association to install by double-clicking a file.</p></section>
+<section><h3 id="3-1-安装应用">3.1 Installing apps</h3>
+<p>APK packages are inspected locally, installed through adb, and added to the application grid. For split packages such as <code>.apks</code> or <code>.xapk</code>, use the supported package workflow. If an ARM-only application fails, check compatibility mode and the Android 14 Google Play image.</p></section>
+<section><h3 id="3-2-打开应用">3.2 Launching apps</h3>
+<p>Double-click the app in ApkStart or its Windows shortcut. Android may start in the background. Subsequent launches usually reuse the running environment. Right-click an app to open its context menu, create a shortcut, adjust orientation, clear app data, or uninstall.</p></section>
+<section><h3 id="3-3-窗口与显示">3.3 Windows, orientation and display</h3>
+<p>Each app is presented as its own Windows window. You can choose portrait or landscape, auto fullscreen and tablet layout in <strong>Settings → Display & Windows</strong>. The app tries to match the virtual panel orientation to the requested application orientation.</p><p>Changes to the virtual screen's physical orientation may restart the Android runtime. Press <kbd>F11</kbd> to toggle fullscreen.</p></section>
+<section><h3 id="3-4-快捷键">3.4 Shortcuts and controls</h3>
+<table><tr><th>Shortcut</th><th>Action</th></tr><tr><td><kbd>F11</kbd></td><td>Toggle fullscreen</td></tr><tr><td>Left mouse button</td><td>Tap / drag</td></tr><tr><td>Right mouse button</td><td>Android Back, when enabled</td></tr><tr><td>Mouse wheel</td><td>Scroll or swipe according to settings</td></tr></table></section>
+<section><h3 id="3-5-文件互通-windows-安卓">3.5 Shared folders between Windows and Android</h3>
+<p>The default Windows folder is <code>%USERPROFILE%\ApkStartShared</code>, paired with <code>/sdcard/ApkStartShared</code> inside Android. ApkStart synchronizes the folders in both directions. It is a synchronization service, not a direct disk mount.</p></section>
+<section><h3 id="3-6-设置页导航">3.6 Finding settings</h3>
+<p>Open <strong>Settings</strong> from the top right of the main window. Categories include General & Installation, Display & Windows, Controls & Input, Performance & Resources, Network & Downloads, Diagnostics & Repair, Integration & Files, and Updates & About. Search for a setting using the search field at the top.</p><p><strong>App Language</strong> changes ApkStart's own interface without changing Android guest language. <strong>Android system language</strong> is a separate setting and takes effect after restarting Android.</p></section>
+<section><h3 id="3-7-在线更新">3.7 Updating</h3>
+<p>Use <strong>Settings → Updates & About → Check for updates</strong>. The updater evaluates available sources and mirrors. Updating the program normally retains Android user data, downloaded runtime files and snapshots.</p></section>
+<section><h2 id="4-理解三个核心概念-看懂报错的关键">4. Runtime, acceleration and ARM compatibility</h2>
+<p><strong>Runtime:</strong> The Android Emulator, adb, and an Android system image.</p><p><strong>Acceleration:</strong> WHPX or Google AEHD can significantly speed up Android boot and rendering. Software fallback is much slower.</p><p><strong>ARM compatibility:</strong> Some ARM-only apps work through the translation layer in the Android 14 Google Play system image. Apps that check for real device sensors, cellular hardware or emulator status may still fail.</p></section>
+<section><h2 id="5-遇到问题先做这一步-体检与自动检测">5. Check the system first</h2>
+<p>Before troubleshooting manually, open <strong>Settings → Diagnostics & Repair</strong> and run the environment check. Follow the suggested repair actions. Export a diagnostic report if the problem continues.</p></section>
+<section><h3 id="5-1-本机体检-自动配置">5.1 Preflight and automatic configuration</h3>
+<p>The preflight system checks CPU virtualization, Windows hypervisor features, GPU, RAM, drivers, and operating system compatibility. Settings that can safely be adjusted are applied or suggested; BIOS-only changes require manual action.</p></section>
+<section><h3 id="5-2-自动检测-自动-debug">5.2 Automatic diagnostics and network repair</h3>
+<p>Background diagnostics check failed boots, invalid snapshots, adb connectivity, disk pressure, incompatible settings, and Android internet access. You can disable checks or change the interval in Settings. For an Android network failure, choose <strong>Repair network</strong>.</p></section>
+<section><h3 id="5-3-导出诊断报告">5.3 Exporting a report</h3>
+<p>Select <strong>Export diagnostic report</strong> from the troubleshooting settings. Include the report and a description of the steps to reproduce your problem when opening an issue.</p></section>
+<section><h3 id="5-4-内置使用手册与自动教程">5.4 Context-sensitive help</h3>
+<p>Diagnostic alerts may open this guide at a relevant section. The help icon in the app header opens the full manual.</p></section>
+<section><h2 id="6-常见问题解决方案">6. Troubleshooting common issues</h2>
+<p>Choose a topic below for specific steps. If you cannot resolve an issue, collect a diagnostic report and the last few lines of <code>app.log</code>.</p></section>
+<section><h3 id="6-1-提示-未启用硬件加速-开机很慢">6.1 Hardware acceleration disabled / Android boots slowly</h3>
+<p>ApkStart can use <strong>Windows Hypervisor Platform (WHPX)</strong> or the <strong>Android Emulator Hypervisor Driver (AEHD)</strong>. Open <strong>Diagnostics & Repair → Repair</strong>. If using the MSIX edition, Windows may require you to enable WHPX yourself.</p><ol><li>Open <strong>Turn Windows features on or off</strong>.</li><li>Select <strong>Windows Hypervisor Platform</strong>.</li><li>Confirm and restart the PC.</li><li>Run the app's environment check again.</li></ol><p>You can also run PowerShell as administrator:</p><pre><code>dism /online /enable-feature /featurename:HypervisorPlatform /all /norestart
+dism /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart</code></pre><p><strong>Important:</strong> Virtual Machine Platform alone is not equivalent to Windows Hypervisor Platform.</p></section>
+<section><h3 id="6-2-安装失败-install_failed_">6.2 APK installation failed (INSTALL_FAILED_*)</h3>
+<table><tr><th>Error</th><th>Action</th></tr><tr><td><code>INSTALL_FAILED_INSUFFICIENT_STORAGE</code></td><td>Free disk space or increase the Android data partition.</td></tr><tr><td><code>INSTALL_FAILED_NO_MATCHING_ABIS</code></td><td>Try Android 14 ARM compatibility support; some apps are not compatible.</td></tr><tr><td><code>INSTALL_FAILED_UPDATE_INCOMPATIBLE</code></td><td>Back up data, uninstall the app with a conflicting signature, and reinstall.</td></tr><tr><td><code>INSTALL_FAILED_VERSION_DOWNGRADE</code></td><td>Remove the higher installed version before installing an older one.</td></tr><tr><td>Corrupted or incomplete APK</td><td>Download a valid installer from a trustworthy source and retry.</td></tr></table></section>
+<section><h3 id="6-3-系统镜像没有-arm-转译层-arm-应用装不上或闪退">6.3 ARM translation missing / ARM-only app crashes</h3>
+<p>Use the Android 14 Google Play system image that includes the translation layer. Confirm that the runtime and image are current. If a particular app detects an emulator or requires physical device hardware, it may still fail even if the installation succeeds.</p></section>
+<section><h3 id="6-4-adb-未授权-允许-usb-调试">6.4 adb unauthorized or offline</h3>
+<p>ApkStart uses adb server port <strong>5044</strong> rather than the default port 5037. In PowerShell:</p><pre><code>$env:ANDROID_ADB_SERVER_PORT = 5044
+adb devices</code></pre><p>If prompted to allow USB debugging, approve it inside Android. Otherwise, use <strong>Diagnostics → Restart runtime</strong>. Avoid manually connecting to port 5555, which may trigger unexpected authorization prompts.</p></section>
+<section><h3 id="6-5-双击图标没反应-一直转圈-出现带旋转按钮的窗口">6.5 Shortcut does nothing / spinner / unexpected window</h3>
+<ol><li>Check whether the Android runtime is installed and running.</li><li>Try launching from within ApkStart instead of the desktop shortcut.</li><li>Run <strong>Diagnostics & Repair</strong>; clear stale locks or restart the runtime when advised.</li><li>Use <strong>Rebuild shortcuts</strong> if shortcut icons or paths are incorrect.</li><li>If an app window is blank, try the default <strong>Native window</strong> rendering mode and check graphics acceleration.</li></ol></section>
+<section><h3 id="6-6-其它启动类问题速查表">6.6 Other startup issues</h3>
+<table><tr><th>Symptom</th><th>Suggested fix</th></tr><tr><td>Stuck boot / blank screen</td><td>Restart runtime, clear a broken snapshot, review acceleration and GPU mode.</td></tr><tr><td>No Android device found</td><td>Check adb on port 5044 and runtime state.</td></tr><tr><td>Disk space warning</td><td>Clean removable files or relocate runtime/data folders.</td></tr><tr><td>Incorrect orientation</td><td>Use per-app orientation override and reopen the app.</td></tr><tr><td>Wrong shortcut icon</td><td>Settings → Integration & Files → Rebuild shortcuts.</td></tr></table></section>
+<section><h3 id="6-7-应用没有声音-声音很小">6.7 No sound / quiet audio</h3>
+<p>Ensure <strong>Android audio</strong> is enabled in ApkStart's settings. Check Windows volume mixer, default audio output, and the Android media volume. Restart the runtime after changing audio settings. Windows Audio service must be running.</p></section>
+<section><h3 id="6-8-商店版启动失败-0xc0000135-dll-加载失败">6.8 Store edition fails with 0xC0000135 or missing DLL</h3>
+<p>This usually indicates a missing Microsoft Visual C++ runtime or related dependency. Install the official <a href="https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist">Microsoft Visual C++ Redistributable (x64)</a>, restart if required, and try again.</p></section>
+<section><h3 id="6-9-应用用不到麦克风-无法语音通话录音">6.9 Microphone unavailable</h3>
+<p>Enable <strong>Microphone input</strong> in ApkStart's performance settings and restart the Android runtime. Check Windows microphone permissions, microphone device selection, and application-level permissions inside Android.</p></section>
+<section><h3 id="6-10-独显-核显渲染-显卡偏好">6.10 Choosing discrete vs integrated graphics</h3>
+<p>If you have both an integrated GPU and a dedicated GPU, select the preferred option under <strong>Performance & Resources → Preferred GPU</strong>. Changes may require restarting the Android emulator to take effect.</p></section>
+<section><h2 id="7-命令行参考">7. Command-line reference</h2>
+<pre><code>ApkStart.exe                         Open ApkStart
+ApkStart.exe &lt;path\to\app.apk&gt;      Install an APK
+ApkStart.exe --launch &lt;package&gt;       Launch installed app</code></pre></section>
+<section><h2 id="8-数据与目录说明">8. Data and storage directories</h2>
+<table><tr><th>Item</th><th>Typical location</th></tr><tr><td>Runtime</td><td><code>%APPDATA%\apkstart\runtime</code></td></tr><tr><td>System images</td><td><code>%APPDATA%\apkstart\system-images</code></td></tr><tr><td>AVD and installed apps</td><td><code>%APPDATA%\apkstart\avd</code></td></tr><tr><td>Icons</td><td><code>%APPDATA%\apkstart\icons</code></td></tr><tr><td>Settings</td><td><code>%APPDATA%\apkstart\settings.json</code></td></tr><tr><td>Shared files</td><td><code>%USERPROFILE%\ApkStartShared</code></td></tr></table><p>Locations may differ in MSIX builds or if you moved data directories. Resetting Android data removes installed app data and cannot be undone.</p></section>
+<section><h2 id="9-获取帮助与反馈">9. Getting help and reporting issues</h2>
+<p>Include the diagnostic report, the last 20 lines of your runtime log, and your exact ApkStart version/distribution when reporting a bug.</p><p><a href="https://github.com/RoutineMiku/apkstart/issues">Original project issues</a> · <a href="https://github.com/spatsariya/apkstart/issues">Fork issues</a></p></section>
+</main></div><script>
+const input=document.getElementById('filter');input.addEventListener('input',()=>{const q=input.value.toLowerCase();for(const link of document.querySelectorAll('#toc a'))link.hidden=!link.textContent.toLowerCase().includes(q);});
+if(location.hash){const id=decodeURIComponent(location.hash.slice(1));const el=document.getElementById(id);if(el)setTimeout(()=>el.scrollIntoView({block:'start'}),80);}
+</script></body></html>
