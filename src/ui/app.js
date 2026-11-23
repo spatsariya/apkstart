@@ -519,22 +519,22 @@ async function markInstalled() {
 function friendlyInstallErrorText(msg) {
   const s = String(msg || 'Unknown error');
   if (/INSUFFICIENT_STORAGE|not enough space|空间不足|ENOSPC/i.test(s)) {
-    return `${s}\n安卓数据分区不够用：设置 → 性能与资源占用 → 安卓数据分区调大后点「立即扩容」。`;
+    return `${s}\nAndroid data storage is full. Increase the data partition in Settings > Performance & Resources, then select Expand now.`;
   }
   // 只有真正失败才走到这里：切换镜像是「进行中」的进度提示（install:progress），
   // 绝不能在红色失败横幅里再说「正在重试」——那会让用户以为还在处理，其实是真的失败了。
   if (/NO_MATCHING_ABIS/i.test(s)) {
     return /已切换到.*仍然安装失败|abiRetried/i.test(s)
-      ? `${s}\nARM 兼容镜像已启用仍装不上，请到「设置 → 诊断与修复」导出诊断报告反馈。`
-      : `${s}\n这个包只有 ARM 库。程序会自动切到兼容镜像重装一次，请留意后续提示。`;
+      ? `${s}\nInstallation failed with ARM compatibility enabled. Export a report from Settings > Diagnostics & Repair.`
+      : `${s}\nThis APK contains only ARM libraries. ApkStart will attempt an installation with the compatible Android image.`;
   }
   if (/INSTALL_FAILED_ALREADY_EXISTS|signatures do not match/i.test(s)) {
-    return `${s}\n同包名但签名不同（常见于从别的渠道装过）。在应用卡片右键「卸载」后再装。`;
+    return `${s}\nAn app with the same package name but a different signature is installed. Uninstall it first, then retry.`;
   }
-  if (/INSTALL_FAILED_VERSION_DOWNGRADE/i.test(s)) return `${s}\n已装版本更高，先在右键菜单里卸载再装。`;
+  if (/INSTALL_FAILED_VERSION_DOWNGRADE/i.test(s)) return `${s}\nA newer version is already installed. Uninstall it before installing an older one.`;
   if (/ERR_FS_FILE_TOO_LARGE|greater than possible Buffer|Cannot allocate|ENOMEM|out of memory/i.test(s)) {
-    return `${s}\n这个安装包过大或内存不足，解析被系统拒绝了。请确认磁盘与内存充足后重试；`
-      + '仍失败请把安装包路径换成纯英文短路径（如 D:\\a.apk）。';
+    return `${s}\nThe APK could not be parsed because it is too large or memory is insufficient. Check free disk space and memory, then retry.`
+      + 'If it still fails, move the APK to a short ASCII-only path (for example, D:\\a.apk).';
   }
   return s;
 }
