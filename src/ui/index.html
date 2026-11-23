@@ -198,6 +198,25 @@
         </button>
       </nav>
     <div class="modal-body" id="settingsBody">
+      <div class="group" id="languageGroup" data-cat="basic">
+        <div class="group-title">App Language / Interface Language</div>
+        <div class="field">
+          <label for="setUiLanguage">ApkStart interface language</label>
+          <select id="setUiLanguage">
+            <option value="en-US">English</option>
+            <option value="zh-CN">简体中文</option>
+          </select>
+          <span class="sub">Changes instantly and is remembered after restarting the app. This does not change the language of Android apps; use Android system language separately.</span>
+        </div>
+        <div class="field">
+          <div class="row">
+            <button class="btn ghost sm" type="button" id="btnImportLocale">Import language pack (any language)</button>
+            <input id="localePackFile" type="file" accept=".json,application/json" hidden />
+          </div>
+          <span class="sub">Other languages can be added using JSON language packs. Unsupported or missing translations fall back to English. Language packs stay on your computer.</span>
+        </div>
+      </div>
+
       <div class="group" id="runtimeGroup" data-cat="basic">
         <div class="group-title">Runtime & Environment</div>
         <div class="field">
@@ -970,6 +989,7 @@
   </div>
 </div>
 
+<script src="i18n.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
