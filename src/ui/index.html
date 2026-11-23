@@ -224,7 +224,7 @@
             <li><b>cfdisk 分区</b>：<code>New</code> → <code>Primary</code> → 容量直接回车 → <code>Bootable</code> → <code>Write</code> → 输入 <code>yes</code> → <code>Quit</code></li>
             <li><b>格式化</b>：选 <code>vda1</code> → 提示格式化时选 <code>ext4</code> → <code>Yes</code></li>
             <li><b>引导与系统</b>：<code>Install GRUB</code> 选 <code>Yes</code>；<code>Install /system as read-write</code> 选 <code>Yes</code></li>
-            <li><b>完成</b>：进度到 100% 后点下面的「I have finished installing」（ApkStart 会Automatic重启并接管）</li>
+            <li><b>完成</b>：进度到 100% 后点下面的「I have finished installing」（ApkStart 会自动重启并接管）</li>
           </ol>
           <p class="guide-tip">如果之后提示 adb 未连接：在虚拟机窗口按 <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>F1</kbd> 进入终端，执行
             <code>setprop service.adb.tcp.port 5555</code>、<code>stop adbd</code>、<code>start adbd</code>，
@@ -241,7 +241,7 @@
         <div class="field">
           <label>Automatic system configuration</label>
           <div class="inline-note" id="autoProfileText">Detecting…</div>
-          <span class="sub">内存、核心数、渲染后端、端口、加速方式全部Automatic选择；启动失败会Automatic降级重试，不需要手动改。
+          <span class="sub">内存、核心数、渲染后端、端口、加速方式全部自动选择；启动失败会自动降级重试，不需要手动改。
             ApkStart 用<b>专用 adb 服务端口 5044</b>（你系统里自己的 adb 是 5037），所以命令行里
             <code>adb devices</code> 看不到这台安卓设备 —— 这是刻意的隔离。想连的话用
             <code>$env:ANDROID_ADB_SERVER_PORT=5044</code> 再执行 adb。
@@ -254,14 +254,14 @@
             <span class="inline-note" id="usageText">Calculating…</span>
             <button class="btn ghost sm" id="btnCleanup">Clean up removable files</button>
             <button class="btn ghost sm" id="btnLeftovers" title="扫描并清掉旧版本留下的程序目录、失效的卸载项和更新临时文件">Remove previous version leftovers</button>
-            <button class="btn ghost sm" id="btnRepairNetwork" title="安卓虚拟机没有网络时（应用里联网页面一直黑屏/转圈），用这个把安卓数据重置掉来修网络。应用清单会保留，点开应用会Automatic重装">Repair network</button>
+            <button class="btn ghost sm" id="btnRepairNetwork" title="安卓虚拟机没有网络时（应用里联网页面一直黑屏/转圈），用这个把安卓数据重置掉来修网络。应用清单会保留，点开应用会自动重装">Repair network</button>
             <button class="btn ghost sm danger" id="btnResetData" title="清空安卓 /data 用户数据 + 已装应用 + 快速启动快照，还原成刚装好系统的干净状态">Reset Android data</button>
           </div>
           <label class="checkbox-inline">
             <input type="checkbox" id="chkCleanSnapshots" />
             <span>连当前 AVD 的快速启动快照也一起清（会先停运行时，能真正回收几 GB 快照）</span>
           </label>
-          <span class="sub">系统镜像全机共享一份，应用数据用差分层保存；旧镜像、旧快照、日志和锁文件都可回收。日志超过上限会Automatic滚动，不会无限增长。「Reset Android data」会真实删除数 GB 用户数据，仅保留系统本身。</span>
+          <span class="sub">系统镜像全机共享一份，应用数据用差分层保存；旧镜像、旧快照、日志和锁文件都可回收。日志超过上限会自动滚动，不会无限增长。「Reset Android data」会真实删除数 GB 用户数据，仅保留系统本身。</span>
         </div>
         <div class="runtime-actions">
           <button class="btn ghost sm" id="btnDiagnostics">Export diagnostic report</button>
@@ -305,7 +305,7 @@
           </select>
           <span class="sub">安卓的横竖屏是<b>虚拟手机面板的真实方向</b>决定的。面板方向和应用自己声明的方向不一致时，
             安卓只会给应用中间一条窄画面、两侧补黑 —— 换窗口大小、改分辨率都填不满。
-            「跟随应用」会在Install APK 时读出应用的方向，启动时Automatic把面板换成一致的那个，
+            「跟随应用」会在Install APK 时读出应用的方向，启动时自动把面板换成一致的那个，
             所以红果、墨读这类应用会正立且铺满。方向不对时才重启一次运行时（约十几秒），
             之后再打开同一方向的应用都是秒进。</span>
         </div>
@@ -315,7 +315,7 @@
             <option value="on">On (default; show auto-rotation enabled in Android)</option>
             <option value="off">Off (lock orientation)</option>
           </select>
-          <span class="sub">安卓里<b>Automatic旋转开关默认打开</b>。注意这不影响画面方向：面板方向和Screen orientation仍由上面的
+          <span class="sub">安卓里<b>自动旋转开关默认打开</b>。注意这不影响画面方向：面板方向和Screen orientation仍由上面的
             策略 + 忽略应用方向请求决定，不会被传感器带歪。只有个别应用读取这个开关值时才会用到。</span>
         </div>
         <div class="field">
@@ -325,7 +325,7 @@
             <option value="off">Off (default density; phone layouts)</option>
           </select>
           <span class="sub">720 宽按 190dpi 算等于 606dp，正好越过 Android 的 600dp 平板断点，
-            红果短剧的双列剧集页、Settings页的分栏都只在这个排版下出现。关掉会回到手机排版
+            红果短剧的双列剧集页、设置页的分栏都只在这个排版下出现。关掉会回到手机排版
             （字更大、信息更少）。切换后下次打开应用生效。</span>
         </div>
         <div class="field">
@@ -334,7 +334,7 @@
             <option value="portrait">Portrait panel</option>
             <option value="landscape">Landscape panel</option>
           </select>
-          <span class="sub">这是运行时<b>现在</b>用的物理面板方向，由上面那条策略Automatic写入。
+          <span class="sub">这是运行时<b>现在</b>用的物理面板方向，由上面那条策略自动写入。
             只有在「强制」模式下它才完全由你决定。</span>
         </div>
         <div class="field">
@@ -363,7 +363,7 @@
         <div class="group-title">Mouse controls</div>
         <div class="field">
           <label>Left click · Tap / Confirm</label>
-          <span class="sub">模拟器原生把左键当成手指点击，按住拖动就是滑动，无需额外Settings。</span>
+          <span class="sub">模拟器原生把左键当成手指点击，按住拖动就是滑动，无需额外设置。</span>
         </div>
         <div class="field switch-field">
           <div>
@@ -474,7 +474,7 @@
             <option value="ja-JP">Japanese</option>
             <option value="ko-KR">한국어</option>
           </select>
-          <span class="sub">系统Settings、权限弹窗、日期格式的语言。开机时注入到虚拟机，
+          <span class="sub">系统设置、权限弹窗、日期格式的语言。开机时注入到虚拟机，
             <b>下次重启运行时生效</b>。中文输入法不受此项影响，单独在下面开关。</span>
         </div>
         <div class="field switch-field">
@@ -529,13 +529,13 @@
               <option value="performance">性能优先 · 运行时与前台同等优先级</option>
               <option value="game">游戏 / 低延迟 · 运行时高优先级，适合 FPS、音游</option>
             </select>
-            <span class="sub">游戏模式会让安卓虚拟机保持较高 CPU 优先级并减少宿主侧轮询，输入与画面延迟最低；代价是整机其他程序会变慢。没有Application windows时容器仍会Automatic降优先级停放。</span>
+            <span class="sub">游戏模式会让安卓虚拟机保持较高 CPU 优先级并减少宿主侧轮询，输入与画面延迟最低；代价是整机其他程序会变慢。没有Application windows时容器仍会自动降优先级停放。</span>
           </div>
         </details>
         <div class="field switch-field">
           <div>
             <label>深度裁剪系统后台</label>
-            <span class="sub">额外禁用 Play 商店、Settings向导、打印服务等后台包，只留打开应用必需的环境。若遇到应用提示缺少 Google Play 服务，关掉此开关会Automatic恢复。</span>
+            <span class="sub">额外禁用 Play 商店、设置向导、打印服务等后台包，只留打开应用必需的环境。若遇到应用提示缺少 Google Play 服务，关掉此开关会自动恢复。</span>
           </div>
           <input type="checkbox" id="setDeepTrim" class="switch" />
         </div>
@@ -556,15 +556,15 @@
         <div class="field">
           <label>更新与下载源</label>
           <select id="setSourcePref">
-            <option value="auto">Automatic选择较快的源（推荐）</option>
+            <option value="auto">自动选择较快的源（推荐）</option>
             <option value="gitee">只用 Gitee（国内通常最快）</option>
             <option value="github">只用 GitHub</option>
           </select>
-          <span class="sub">「Automatic」会同时问 GitHub 与 Gitee 的最新版本，把每个下载地址都真下 256KB 测一次速度，再从最快的那个地址下载；其中一个源不通不影响更新。</span>
+          <span class="sub">「自动」会同时问 GitHub 与 Gitee 的最新版本，把每个下载地址都真下 256KB 测一次速度，再从最快的那个地址下载；其中一个源不通不影响更新。</span>
         </div>
         <div class="field switch-field">
           <div>
-            <label>Automatic尝试公共加速镜像</label>
+            <label>自动尝试公共加速镜像</label>
             <span class="sub">GitHub 直连太慢时，额外测速 ghfast.top / gh-proxy.com 这两个公开转发服务（只转发公开的发布文件，不涉及账号）。关掉后只用直连和你自己填的前缀。</span>
           </div>
           <input type="checkbox" id="setAutoMirror" class="switch" />
@@ -572,7 +572,7 @@
         <div class="field">
           <label>下载镜像前缀（可选，加速 GitHub）</label>
           <input id="setMirrorPrefix" type="text" placeholder="例如 https://ghfast.top/" />
-          <span class="sub">填了就只用你填的前缀，不再尝试上面那两个公共镜像；留空则由「Automatic」逻辑决定。下载器会把它拼在真实地址前面。</span>
+          <span class="sub">填了就只用你填的前缀，不再尝试上面那两个公共镜像；留空则由「自动」逻辑决定。下载器会把它拼在真实地址前面。</span>
         </div>
         <div class="field">
           <label>下载线程数（1–16，默认 8）</label>
@@ -586,17 +586,17 @@
             <input id="setGiteeToken" type="password" placeholder="留空即可：公开仓库匿名也能读" />
             <span class="sub">本项目仓库已公开，Gitee 的发行版列表匿名就能读，留空也能用 Gitee 源。
               只有在「Gitee 被限流（返回 403/429）」或你想读私有分支时才需要填：
-              gitee.com → Settings → 私人令牌，只勾「projects」即可，它只用于读取发行版列表，
+              gitee.com → 设置 → 私人令牌，只勾「projects」即可，它只用于读取发行版列表，
               不会上传任何东西。</span>
           </div>
         </details>
       </div>
 
       <div class="group" id="preflightGroup" data-cat="diag">
-        <div class="group-title">本机体检 · Automatic配置</div>
+        <div class="group-title">本机体检 · 自动配置</div>
         <div class="field">
           <span class="sub">先查一遍这台机器：CPU 虚拟化有没有开、Windows 的虚拟机监控程序平台在不在、
-            显卡是什么、显存多大、内存和系统版本够不够。能Automatic改的（内存 / 核心 / 画质 / 渲染后端）直接写进Settings，
+            显卡是什么、显存多大、内存和系统版本够不够。能自动改的（内存 / 核心 / 画质 / 渲染后端）直接写进设置，
             并把结果固化成一份驱动；必须管理员权限的给按钮；只能在 BIOS 里改的会告诉你怎么改。</span>
         </div>
         <div class="field">
@@ -635,15 +635,15 @@
       </div>
 
       <div class="group" id="autodebugGroup" data-cat="diag">
-        <div class="group-title">Automatic检测 · 智能诊断</div>
+        <div class="group-title">自动检测 · 智能诊断</div>
         <div class="field">
           <span class="sub">后台定时把这台机器查一遍：安卓运行时有没有起来、adb 授权是否正常、磁盘还剩多少、
-            数据分区是不是被差量盘挡住、快照有没有坏、Settings之间有没有互相打架。
+            数据分区是不是被差量盘挡住、快照有没有坏、设置之间有没有互相打架。
             只在发现<b>新</b>的严重问题时弹一次通知，其余都安静地列在下面。</span>
         </div>
         <div class="field switch-field">
           <div>
-            <label>启用Automatic检测（默认开启）</label>
+            <label>启用自动检测（默认开启）</label>
             <span class="sub">关掉后不再定时扫描；随时可以点「立即检测」手动跑一次。</span>
           </div>
           <input type="checkbox" id="setAutodebugAuto" class="switch" />
@@ -690,11 +690,11 @@
         </div>
         <div class="field">
           <label>adb 路径</label>
-          <input id="setAdbPath" type="text" placeholder="留空则Automatic在 PATH / Android SDK 中查找" />
+          <input id="setAdbPath" type="text" placeholder="留空则自动在 PATH / Android SDK 中查找" />
         </div>
         <div class="field">
           <label>设备地址</label>
-          <span class="sub" id="deviceAddrNote">由 ApkStart 自己分配（emulator-5554，端口冲突时Automatic顺延），无需填写。</span>
+          <span class="sub" id="deviceAddrNote">由 ApkStart 自己分配（emulator-5554，端口冲突时自动顺延），无需填写。</span>
         </div>
         <div class="field">
           <label>系统镜像（ISO）</label>
@@ -702,11 +702,11 @@
         </div>
         <div class="field two">
           <div>
-            <label>内存 (MB，0 = Automatic)</label>
+            <label>内存 (MB，0 = 自动)</label>
             <input id="setMemory" type="number" min="0" step="512" />
           </div>
           <div>
-            <label>CPU 核心（0 = Automatic）</label>
+            <label>CPU 核心（0 = 自动）</label>
             <input id="setCores" type="number" min="0" max="16" />
           </div>
         </div>
@@ -719,8 +719,8 @@
         </div>
         <div class="field switch-field">
           <div>
-            <label>通用兼容镜像（Automatic管理）</label>
-            <span class="sub">现在只有一个 Android 14 通用镜像，x86 与 ARM 应用都能跑，首次遇到 ARM 应用时会Automatic下载，不需要手动切换。此开关仅用于旧配置兼容。</span>
+            <label>通用兼容镜像（自动管理）</label>
+            <span class="sub">现在只有一个 Android 14 通用镜像，x86 与 ARM 应用都能跑，首次遇到 ARM 应用时会自动下载，不需要手动切换。此开关仅用于旧配置兼容。</span>
           </div>
           <input type="checkbox" id="setCompat" class="switch" />
         </div>
@@ -740,7 +740,7 @@
       </details>
 
       <div class="group" data-cat="display">
-        <div class="group-title">安卓系统Settings（不用进安卓桌面）</div>
+        <div class="group-title">安卓系统设置（不用进安卓桌面）</div>
         <div class="field">
           <label>Runtime status</label>
           <div class="row">
@@ -799,10 +799,10 @@
           </div>
         </div>
         <div class="runtime-actions">
-          <button class="btn ghost sm" id="btnAndroidSettings">安卓原生Settings</button>
-          <button class="btn ghost sm" id="btnAndroidDisplay">显示Settings</button>
-          <button class="btn ghost sm" id="btnAndroidSound">声音Settings</button>
-          <button class="btn ghost sm" id="btnAndroidLocale">语言Settings</button>
+          <button class="btn ghost sm" id="btnAndroidSettings">安卓原生设置</button>
+          <button class="btn ghost sm" id="btnAndroidDisplay">显示设置</button>
+          <button class="btn ghost sm" id="btnAndroidSound">声音设置</button>
+          <button class="btn ghost sm" id="btnAndroidLocale">语言设置</button>
           <button class="btn ghost sm" id="btnAndroidApps">应用管理</button>
         </div>
       </div>
@@ -811,7 +811,7 @@
         <div class="group-title">桌面与应用</div>
         <div class="field switch-field">
           <div>
-            <label>安装后Automatic创建桌面快捷方式</label>
+            <label>安装后自动创建桌面快捷方式</label>
             <span class="sub">快捷方式带真实应用图标，双击直接进应用</span>
           </div>
           <input type="checkbox" id="setAutoShortcut" class="switch" />
@@ -829,7 +829,7 @@
         </div>
         <div class="runtime-actions">
           <button class="btn ghost sm" id="btnRebuildShortcuts">Rebuild shortcuts</button>
-          <span class="inline-note">桌面图标被误删或被安全软件拦掉时，点这里按当前Settings全部补齐。</span>
+          <span class="inline-note">桌面图标被误删或被安全软件拦掉时，点这里按当前设置全部补齐。</span>
         </div>
       </div>
 
@@ -844,7 +844,7 @@
             <button class="btn ghost sm" id="btnSyncShared">立即同步</button>
             <button class="btn primary sm" id="btnSaveShared">保存并迁移</button>
           </div>
-          <span class="sub">修改后旧目录里已有的文件会Automatic搬到新目录；正在运行的文件互通不受影响。</span>
+          <span class="sub">修改后旧目录里已有的文件会自动搬到新目录；正在运行的文件互通不受影响。</span>
         </div>
         <div class="field">
           <label>安卓内对应目录</label>
@@ -869,7 +869,7 @@
             <button class="btn ghost sm" id="btnBrowseRuntimeDir">浏览</button>
             <button class="btn ghost sm" id="btnOpenData">打开</button>
           </div>
-          <span class="sub">这里占用空间最大（数 GB）。改到非系统盘可大幅减轻 C 盘压力；修改后需重启软件，已存在的数据不会Automatic搬移（请手动复制后删除旧目录）。</span>
+          <span class="sub">这里占用空间最大（数 GB）。改到非系统盘可大幅减轻 C 盘压力；修改后需重启软件，已存在的数据不会自动搬移（请手动复制后删除旧目录）。</span>
         </div>
         <div class="field">
           <label>安卓数据目录（应用、游戏与快速启动快照）</label>
@@ -901,7 +901,7 @@
           </div>
           <div class="update-bar" id="updateBar" hidden><i id="updateBarFill"></i></div>
           <span class="sub" id="updateNote">
-            从 GitHub（RoutineMiku/apkstart）获取最新版本；轻量版会下载便携包并Automatic替换程序文件，
+            从 GitHub（RoutineMiku/apkstart）获取最新版本；轻量版会下载便携包并自动替换程序文件，
             运行时、已装应用与快照都不受影响。
           </span>
         </div>
@@ -964,7 +964,7 @@
     </div>
     </div>
     <footer class="modal-foot">
-      <span class="inline-note">Settings修改后立即生效</span>
+      <span class="inline-note">设置修改后立即生效</span>
       <button class="btn primary" id="btnDoneSettings">完成</button>
     </footer>
   </div>
