@@ -39,7 +39,7 @@ function relTime(ts) {
   if (d < 3600000) return `${Math.floor(d / 60000)} minutes ago`;
   if (d < 86400000) return `${Math.floor(d / 3600000)} hours ago`;
   if (d < 86400000 * 30) return `${Math.floor(d / 86400000)} days ago`;
-  return new Date(ts).toLocaleDateString('zh-CN');
+  return new Date(ts).toLocaleDateString('en-US');
 }
 
 /**
@@ -1091,7 +1091,7 @@ function fillSettings(s) {
   if ($('setRenderSize')) $('setRenderSize').value = eng.renderSize || 'auto';
   if ($('setDataGB')) $('setDataGB').value = String(Number(eng.dataPartitionGB || 0));
   if ($('setFastDns')) $('setFastDns').checked = eng.fastDns !== false;
-  if ($('setLocale')) $('setLocale').value = eng.locale || 'zh-CN';
+  if ($('setLocale')) $('setLocale').value = eng.locale || 'en-US';
   if ($('setChineseIme')) $('setChineseIme').checked = eng.chineseIme !== false;
   if ($('setKeepSnapshot')) $('setKeepSnapshot').checked = eng.keepSnapshot !== false;
   $('setDisplayMode').value = d.mode === 'fullscreen' ? 'fullscreen' : 'window';
