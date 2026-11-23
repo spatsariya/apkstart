@@ -1148,15 +1148,15 @@ async function refreshDataInfo() {
  * test/settings-categories-test.js 会校验这一致性。
  */
 const SETTINGS_CATS = [
-  { id: 'basic', name: '常用与安装' },
-  { id: 'display', name: '显示与窗口' },
-  { id: 'input', name: '操作与输入' },
-  { id: 'perf', name: '性能与资源' },
-  { id: 'net', name: '网络与下载' },
-  { id: 'diag', name: '诊断与修复' },
-  { id: 'files', name: '集成与文件' },
-  { id: 'about', name: '更新与关于' },
-  { id: 'lab', name: '实验室' },
+  { id: 'basic', name: 'General & Installation' },
+  { id: 'display', name: 'Display & Windows' },
+  { id: 'input', name: 'Controls & Input' },
+  { id: 'perf', name: 'Performance & Resources' },
+  { id: 'net', name: 'Network & Downloads' },
+  { id: 'diag', name: 'Diagnostics & Repair' },
+  { id: 'files', name: 'Integration & Files' },
+  { id: 'about', name: 'Updates & About' },
+  { id: 'lab', name: 'Experimental' },
 ];
 
 const settingsCatState = { cat: 'basic', query: '' };
