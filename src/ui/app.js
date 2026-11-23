@@ -490,7 +490,7 @@ async function startInstall() {
   }
   $('setupGuide').hidden = false;
   $('setupGuide').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  toast({ title: 'Virtual machine window opened', body: 'Follow the six installation steps, then click 'Installation complete'.', type: 'ok', sticky: true });
+  toast({ title: 'Virtual machine window opened', body: 'Follow the six installation steps, then click "Installation complete".', type: 'ok', sticky: true });
 }
 
 async function markInstalled() {
