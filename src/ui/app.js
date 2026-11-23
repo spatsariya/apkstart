@@ -2,6 +2,16 @@
 
 const api = window.apkstart;
 const $ = (id) => document.getElementById(id);
+const confirmInLanguage = (opts) => {
+  const i18n = window.ApkStartI18n;
+  if (!i18n) return api.confirm(opts);
+  const translated = { ...opts };
+  for (const field of ['title', 'message', 'detail', 'okLabel']) {
+    if (typeof translated[field] === 'string') translated[field] = i18n.translate(translated[field]);
+  }
+  return api.confirm(translated);
+};
+
 
 const state = {
   apps: [],
@@ -1756,7 +1766,7 @@ function bindSettings() {
     $('btnGrowData').addEventListener('click', async () => {
       const gb = Number($('setDataGB').value) || 0;
       if (!gb) { toast({ title: '先选一个容量', body: '「自动」表示由软件按磁盘余量决定，不需要扩容', type: 'info' }); return; }
-      const { response } = await api.confirm({
+      const { response } = await confirmInLanguage({
         title: '立刻把安卓数据分区扩容？',
         message: `将把 /data 调整为 ${gb} GB（就地扩容，已装应用和存档都会保留）。`,
         detail: '扩容需要先关掉Running的安卓应用，完成后下次Open app会重新引导，约多花十几秒。',
@@ -1772,7 +1782,7 @@ function bindSettings() {
       if (r && !r.ok && r.needsReset) {
         // 快速启动的差量盘挡着：就地扩容做不到，只能按新容量重建 /data。
         // 这是明确的数据丢失操作，必须单独再确认一次。
-        const again = await api.confirm({
+        const again = await confirmInLanguage({
           title: '需要重置安卓数据才能扩容',
           message: `安卓正在使用快速启动差量盘，就地扩容改不到它。要拿到 ${gb} GB 空间，必须按新容量重建 /data。`,
           detail: '重建会清空已安装的应用与存档（模拟器本身和镜像不受影响）。确定继续吗？',
@@ -2007,7 +2017,7 @@ function bindSettings() {
     const btn = $('btnResetData');
     btn.disabled = true;
     try {
-      const first = await api.confirm({
+      const first = await confirmInLanguage({
         type: 'warning',
         title: '重置安卓数据？',
         message: '这会把安卓系统还原成「刚装好系统」的干净状态：',
@@ -2020,7 +2030,7 @@ function bindSettings() {
         cancelId: 0,
       });
       if (!first || first.response !== 1) return;
-      const second = await api.confirm({
+      const second = await confirmInLanguage({
         type: 'warning',
         title: '再确认一次',
         message: '已安装的 app 和它们的数据将被永久删除，确定要重置吗？',
@@ -2056,7 +2066,7 @@ function bindSettings() {
     const btn = $('btnRepairNetwork');
     btn.disabled = true;
     try {
-      const ok = await api.confirm({
+      const ok = await confirmInLanguage({
         type: 'warning',
         title: '修复虚拟机网络？',
         message: '应用里需要联网的页面一直黑屏/转圈，通常是安卓虚拟机没有网络。',
@@ -2109,7 +2119,7 @@ function bindSettings() {
       const mb = Math.round((r.totalBytes || 0) / 1048576);
       const lines = items.slice(0, 8).map((x) => `• ${x.note}：${x.path}`);
       if (items.length > 8) lines.push(`…另有 ${items.length - 8} 项`);
-      const ok = await api.confirm({
+      const ok = await confirmInLanguage({
         type: 'warning',
         title: '清理旧版本残留？',
         message: `找到 ${items.length} 项残留，约 ${mb} MB：`,
