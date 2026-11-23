@@ -648,7 +648,7 @@
             <button class="btn ghost sm" id="btnDrvFolder">Open profiles folder</button>
             <button class="btn ghost sm" id="btnDrvExport">Export this PC template</button>
           </div>
-          <span class="sub">「Export this PC template」会把匹配条件按这台机器填好，改 <code>effect</code> 里的
+          <span class="sub">Exporting a template populates matching conditions for this PC. Edit <code>effect</code> 里的
             <code>gpuMode</code> / <code>forceTcg</code> to customize the effects. See the field definitions in <code>docs/drivers.md</code>。</span>
         </div>
       </div>
@@ -701,9 +701,9 @@
         <div class="field">
           <label>Runtime</label>
           <div class="row">
-            <input id="setEngineLabel" type="text" readonly value="ApkStart 自带Runtime（QEMU + Android 14，独立运行）" />
+            <input id="setEngineLabel" type="text" readonly value="ApkStart built-in runtime (QEMU + Android 14, standalone)" />
           </div>
-          <span class="sub">ApkStart 只跑自己的Runtime：adb / emulator / 系统镜像都由它自己下载和管理，
+          <span class="sub">ApkStart uses its own runtime. It downloads and manages adb, emulator, and system images independently.
             It does not require, detect or control third-party emulators (MuMu, LDPlayer, BlueStacks or WSA).
             Other emulator installations or updates do not affect ApkStart.</span>
         </div>
@@ -747,11 +747,11 @@
           <label>Compatibility image</label>
           <div class="row">
             <span class="inline-note" id="compatImgStatus">Not downloaded</span>
-            <button class="btn ghost sm" id="btnInstallPlay">下载Compatibility image</button>
+            <button class="btn ghost sm" id="btnInstallPlay">Download compatibility image</button>
           </div>
         </div>
         <div class="runtime-actions">
-          <button class="btn ghost sm" id="btnRuntimeStart">启动Runtime</button>
+          <button class="btn ghost sm" id="btnRuntimeStart">Start runtime</button>
           <button class="btn ghost sm" id="btnRuntimeStop">Stop built-in virtual machine</button>
           <span class="inline-note" id="probeResult"></span>
         </div>
@@ -763,7 +763,7 @@
         <div class="field">
           <label>Runtime status</label>
           <div class="row">
-            <span class="inline-note" id="androidStatus">Runtime未启动</span>
+            <span class="inline-note" id="androidStatus">Runtime not running</span>
             <button class="btn ghost sm" id="btnAndroidRefresh">Refresh</button>
             <button class="btn ghost sm" id="btnAndroidTune">Optimize performance</button>
           </div>
@@ -863,13 +863,13 @@
             <button class="btn ghost sm" id="btnSyncShared">Sync now</button>
             <button class="btn primary sm" id="btnSaveShared">Save and migrate</button>
           </div>
-          <span class="sub">修改后旧目录里已有的文件会自动搬到新目录；正在运行的File Sharing不受影响。</span>
+          <span class="sub">Files in the old shared folder are moved automatically. Active file synchronization continues.</span>
         </div>
         <div class="field">
           <label>Corresponding Android folder</label>
           <input id="setDeviceSharedDir" type="text" placeholder="/sdcard/ApkStartShared" />
         </div>
-        <p class="note">两侧目录会持续双向同步；在安卓应用里保存到该目录的文件，会出现在Host shared folder中。</p>
+        <p class="note">This folder syncs in both directions with Android. Files saved by Android apps appear in the Windows shared folder.</p>
       </div>
 
       <div class="group" data-cat="files">
@@ -882,73 +882,73 @@
           <button class="btn ghost sm" id="btnAssoc">Checking…</button>
         </div>
         <div class="field">
-          <label>Runtime数据目录（系统镜像 · 已装应用 · 快照）</label>
+          <label>Runtime data folder (system images, apps, snapshots)</label>
           <div class="row">
             <input id="setRuntimeDir" type="text" readonly placeholder="Default: user data folder on drive C:" />
             <button class="btn ghost sm" id="btnBrowseRuntimeDir">Browse</button>
             <button class="btn ghost sm" id="btnOpenData">Open</button>
           </div>
-          <span class="sub">这里占用空间最大（数 GB）。改到非系统盘可大幅减轻 C 盘压力；修改后需重启软件，已存在的数据不会自动搬移（请手动复制后删除旧目录）。</span>
+          <span class="sub">This can use several GB. Move the folder to another drive to save space on C:. Restart ApkStart afterward. Existing data must be moved manually.</span>
         </div>
         <div class="field">
-          <label>安卓数据目录（应用、游戏与快速启动快照）</label>
+          <label>Android data directory (apps, games and quickboot snapshots)</label>
           <div class="row">
-            <input id="setAvdDir" type="text" readonly placeholder="默认：Runtime目录下的 avd 文件夹" />
+            <input id="setAvdDir" type="text" readonly placeholder="Default: avd folder in the runtime directory" />
             <button class="btn ghost sm" id="btnBrowseAvdDir">Browse</button>
             <button class="btn ghost sm" id="btnOpenAvdDir">Open</button>
           </div>
-          <span class="sub">真正吃盘的是这一块：数据分区（默认 6 GB，可在上面对大）+ 快速启动快照（约 2–3 GB）。
-            磁盘紧张时把它指到另一个盘（如 D:），重启软件后生效；旧目录里的 <code>apkstart.avd</code> 可整体搬过去再删。</span>
+          <span class="sub">Most disk usage comes from the Android data partition (6 GB by default) and quickboot snapshots (around 2–3 GB).
+            Move this folder to another drive (such as D:) and restart ApkStart. The old <code>apkstart.avd</code> directory can be copied to the new location and then removed.</span>
         </div>
         <div class="field">
-          <label>卸载 ApkStart</label>
+          <label>Uninstall ApkStart</label>
           <div class="row">
-            <button class="btn ghost sm" id="btnUninstall">一键卸载</button>
-            <span class="inline-note">卸载会取消 .apk 关联并移除程序；便携版请按提示手动删除目录。</span>
+            <button class="btn ghost sm" id="btnUninstall">Uninstall</button>
+            <span class="inline-note">Uninstall removes APK associations and program files. For portable builds, delete the directory manually as directed.</span>
           </div>
         </div>
       </div>
       <div class="group" id="updateGroup" data-cat="about">
-        <div class="group-title">软件更新</div>
+        <div class="group-title">Software updates</div>
         <div class="field">
-          <label>当前版本 <span class="inline-note" id="updateCurrent">—</span></label>
+          <label>Current version <span class="inline-note" id="updateCurrent">—</span></label>
           <div class="row">
-            <span class="inline-note" id="updateState">尚未检查</span>
+            <span class="inline-note" id="updateState">Not checked yet</span>
             <span style="flex:1"></span>
-            <button class="btn ghost sm" id="btnCheckUpdate">检查更新</button>
-            <button class="btn primary sm" id="btnDoUpdate" style="display:none" hidden>立即更新</button>
+            <button class="btn ghost sm" id="btnCheckUpdate">Check for updates</button>
+            <button class="btn primary sm" id="btnDoUpdate" style="display:none" hidden>Update now</button>
           </div>
           <div class="update-bar" id="updateBar" hidden><i id="updateBarFill"></i></div>
           <span class="sub" id="updateNote">
-            从 GitHub（RoutineMiku/apkstart）获取最新版本；轻量版会下载便携包并自动替换程序文件，
-            Runtime、已装应用与快照都不受影响。
+            Check the latest release on GitHub (RoutineMiku/apkstart). Lightweight portable builds download updated files automatically.
+            Runtime files, installed applications and snapshots are preserved.
           </span>
         </div>
       </div>
 
       <div class="group" id="aboutGroup" data-cat="about">
-        <div class="group-title">关于</div>
+        <div class="group-title">About</div>
         <div class="about-box">
           <div class="about-brand">
             <img class="about-logo" src="assets/logo.png" alt="ApkStart Logo" draggable="false" />
           </div>
           <div class="about-qrs">
             <div class="about-qr">
-              <img src="assets/wechat-qr.jpg" alt="微信公众号二维码" width="112" height="112" />
-              <span class="about-qr-tip">扫码关注公众号</span>
+              <img src="assets/wechat-qr.jpg" alt="WeChat public account QR code" width="112" height="112" />
+              <span class="about-qr-tip">Scan to follow the author</span>
             </div>
             <div class="about-qr">
-              <img src="assets/douyin-qr.jpg" alt="抖音二维码" width="112" height="112" />
-              <span class="about-qr-tip">抖音 · 日常MIKU</span>
+              <img src="assets/douyin-qr.jpg" alt="Douyin QR code" width="112" height="112" />
+              <span class="about-qr-tip">Douyin · RoutineMiku</span>
             </div>
           </div>
           <div class="about-info">
             <div class="about-name">ApkStart <span class="about-ver" id="aboutVer"></span></div>
-            <p class="note">双击即装的 Windows 安卓应用启动器：APK 安装、桌面快捷方式、独立窗口运行、文件双向互通。</p>
+            <p class="note">Install Android apps on Windows by double-clicking APKs. Create shortcuts, launch in separate windows, and sync files.</p>
             <div class="about-links">
               <button class="btn ghost sm" id="btnOpenManual">OpenUser guide and troubleshooting</button>
               <a href="https://github.com/RoutineMiku/apkstart" target="_blank" rel="noopener">GitHub · RoutineMiku/apkstart</a>
-              <a href="https://v.douyin.com/9TIIxVCANig/" target="_blank" rel="noopener">抖音 · @日常MIKU（联系作者）</a>
+              <a href="https://v.douyin.com/9TIIxVCANig/" target="_blank" rel="noopener">Douyin · @RoutineMiku (original developer)</a>
               <span class="powered">Powered by <b>RoutineMiku</b></span>
             </div>
           </div>
@@ -958,33 +958,33 @@
       <div class="group" id="labGroup" data-cat="lab">
         <div class="group-title">Experimental</div>
         <div class="lab-notice">
-          这里的功能还在实验阶段，行为可能随版本变化。遇到问题可在「Diagnostics & Repair → Export diagnostic report」反馈。
+          These features are experimental and may change. If something fails, export a report from Diagnostics & Repair.
         </div>
         <div class="field switch-field">
           <div>
-            <label>Windows 原生多窗口 · 多开（实验性）</label>
-            <span class="sub">开启后Open新应用不再强制关闭上一个：多个应用可同时驻留、随时快速切回（保留登录态，不必重新加载），切回体验接近多窗口。
-              受限于安卓Runtime只有一个模拟器窗口，同一时刻仍只有一个应用画面在前台显示，并非真正的同时并排多窗口。
-              会明显增加内存占用；关闭则回到「一次只显示一个应用」的稳定模式。</span>
+            <label>Windows multi-window support (experimental)</label>
+            <span class="sub">When enabled, launching another app does not force-close the previous one. Apps can stay resident for fast switching without losing login sessions.
+              Because the Android runtime has one emulator window, only one app display can be shown at a time. This is not true side-by-side multi-window mode.
+              Memory usage increases. Disable to return to stable single-app mode.</span>
           </div>
           <input type="checkbox" id="setMultiWindow" class="switch" />
         </div>
         <div class="field">
-          <label for="setKeepBackground">后台保留应用数</label>
+          <label for="setKeepBackground">Background apps to keep</label>
           <select id="setKeepBackground">
-            <option value="0">0 · 最省内存（只留当前应用）</option>
-            <option value="1">1 · 平衡（推荐）</option>
-            <option value="2">2 · 多开更稳</option>
-            <option value="3">3 · 最多并存</option>
+            <option value="0">0 · Save memory (current app only)</option>
+            <option value="1">1 · Balanced (recommended)</option>
+            <option value="2">2 · More background apps</option>
+            <option value="3">3 · Maximum background apps</option>
           </select>
-          <span class="sub">多开模式下，超过这个数量的后台应用会被挂起（保留数据、秒切回），释放内存。</span>
+          <span class="sub">When the limit is exceeded, older background apps are suspended while retaining their data.</span>
         </div>
       </div>
     </div>
     </div>
     <footer class="modal-foot">
-      <span class="inline-note">设置修改后立即生效</span>
-      <button class="btn primary" id="btnDoneSettings">完成</button>
+      <span class="inline-note">Settings changes apply immediately</span>
+      <button class="btn primary" id="btnDoneSettings">Done</button>
     </footer>
   </div>
 </div>
