@@ -58,6 +58,20 @@ Official upstream release mirrors:
 
 The application binary uses ApkStart icons and version metadata. These figures and package names describe upstream builds and may vary by release.
 
+## Building on Windows with npm 12
+
+Install dependencies and approve Electron's known install scripts before packaging:
+
+```powershell
+npm ci
+npm install-scripts approve electron electron-winstaller
+npm rebuild electron electron-winstaller
+Test-Path .\\node_modules\\electron\\dist\\electron.exe
+npm run pack
+```
+
+The `Test-Path` command must return `True`. If it returns `False`, run `node .\\node_modules\\electron\\install.js` to download the Electron binary explicitly, then run `npm run pack` again. The npm `allowScripts` approval changes your local `package.json`. Review these packages before approving them; don't use `approve --all` blindly. Audit warnings are separate from a missing Electron runtime.
+
 ## Interface language and translations
 
 ApkStart now supports an independent **App Language** setting:
