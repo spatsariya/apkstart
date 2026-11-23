@@ -25,7 +25,14 @@
   const textSources = new WeakMap();
   const attrSources = new WeakMap();
   const lastWrites = new WeakMap();
-  let locale = localStorage.getItem(LOCALE_KEY) || 'en-US';
+  // Auxiliary windows get their language from the native process, since file://
+  // pages may not share the same localStorage origin.
+  const windowLocale = (() => {
+    try {
+      return window.location && new URLSearchParams(window.location.search).get('lang');
+    } catch (_) { return null; }
+  })();
+  let locale = windowLocale || localStorage.getItem(LOCALE_KEY) || 'en-US';
   if (locale !== 'en-US' && locale !== 'zh-CN' && !packs.has(locale)) locale = 'en-US';
 
   // Additional translations for original Chinese strings still present in the UI.
