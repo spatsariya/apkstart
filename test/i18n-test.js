@@ -94,4 +94,32 @@ for (const topic of Object.values(manual.TOPICS)) {
   assert.ok(chineseManual.includes('id="' + topic.anchor + '"'), 'Missing Chinese manual anchor: ' + topic.anchor);
 }
 
-console.log('Language switching, imports, fallback, persistence, settings and manual anchors: PASS');
+
+const nativeCatalog = JSON.parse(read('src/core/interface-en.json')).translations;
+for (const source of [
+  '正在准备安卓运行时…',
+  '安装失败：',
+  '渲染后端崩溃（0xC0000005 访问冲突）',
+  'CPU 虚拟化在 BIOS 里没开',
+  '连不上更新服务器',
+  'match 必须是对象',
+]) {
+  assert.ok(nativeCatalog[source], 'Missing English translation for: ' + source);
+}
+for (const [source, english] of Object.entries(nativeCatalog)) {
+  assert.equal(typeof english, 'string', 'Translation must be text: ' + source);
+  assert.doesNotMatch(english, /[\u3400-\u9fff]/, 'English translation still contains Chinese: ' + source);
+}
+const packScript = read('build/pack.js');
+assert.match(packScript, /'ApkStart Android App Launcher'/);
+assert.doesNotMatch(packScript, /FileDescription=ApkStart [\u3400-\u9fff]/);
+
+for (const file of [
+  'src/ui/i18n.js', 'src/ui/app.js', 'src/main.js', 'src/preload.js',
+  'src/core/installer.js', 'src/core/provision.js', 'src/core/updater.js',
+  'src/core/appwin.js', 'build/pack.js',
+]) {
+  assert.doesNotThrow(() => new Function(read(file)), 'Invalid JavaScript: ' + file);
+}
+
+console.log('Language switching, backend coverage, syntax, package metadata, persistence and manual anchors: PASS');
