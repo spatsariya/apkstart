@@ -861,9 +861,12 @@ async function enableWhpxFeatures() {
 }
 
 /** 商店版专用的手动引导文案：MSIX 包固定 mediumIL，提权通常拿不到 */
-const MSIX_ACCEL_HINT = '商店版无法自行提权。请手动开启一次：'
-  + '按 Win+R → 输入 optionalfeatures → 勾选「Windows 虚拟机监控程序平台」'
-  + '（HypervisorPlatform，WHPX 真正需要的那个），确定后重启电脑。';
+function msixAccelHint() {
+  return uiText(
+    'The Microsoft Store edition cannot request administrator access. Press Win+R, enter optionalfeatures, enable Windows Hypervisor Platform, and restart Windows.',
+    '商店版无法自行提权。请手动开启一次：按 Win+R → 输入 optionalfeatures → 勾选「Windows 虚拟机监控程序平台」（HypervisorPlatform，WHPX 真正需要的那个），确定后重启电脑。'
+  );
+}
 
 // ---------------- 主窗口 ----------------
 
@@ -2116,7 +2119,7 @@ function registerIpc() {
             severity: 'error',
             title: uiText('Enable Windows Hypervisor Platform', '需要开启「Windows 虚拟机监控程序平台」'),
             hint: uiText('Without it, Android uses slow software emulation and startup may take minutes. ', '没有它只能跑纯软件模拟，开机会慢到几分钟。')
-              + MSIX_ACCEL_HINT
+              + msixAccelHint()
               + uiText(' (The Microsoft Store version cannot request elevation; enable the feature manually and restart.)', '（商店版无法代你提权，需要你手动操作一次，之后重启。）'),
             fix: 'virtualization',
           }
@@ -2529,7 +2532,7 @@ function registerIpc() {
           settingsUri: 'ms-settings:optionalfeatures',
           steps: whpx.steps,
           accel,
-          note: MSIX_ACCEL_HINT,
+          note: msixAccelHint(),
         };
       }
 
