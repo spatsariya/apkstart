@@ -52,6 +52,10 @@ For a fully translated interface in another language, its pack must cover the us
 - `src/ui/manual-en.html` and `src/ui/manual.html` are language-specific help pages, with preserved deep-link IDs.
 - Changes made in GitHub source files do not update an already installed application. Rebuild from the fork and install or extract the new build.
 
+## Important: updates from the original project
+
+This fork currently inherits the upstream update source (`RoutineMiku/apkstart`). An update installed from upstream may replace your translated fork build with an original release. Until the fork publishes its own releases and updater configuration, avoid installing upstream updates over a custom English-language build.
+
 ## Build the translated app on Windows
 
 ```powershell
