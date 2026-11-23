@@ -33,7 +33,7 @@ window.addEventListener('keydown', (e) => {
 
 function applyState(s) {
   if (!s) return;
-  $('appName').textContent = s.label || '应用';
+  $('appName').textContent = s.label || 'App';
   $('bootName').textContent = s.label || '';
   const icon = s.iconUrl || '';
   // 品牌兜底图：应用图标解不出来（ICO/WebP 解码失败、file URL 被 CSP 拦）时
