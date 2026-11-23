@@ -21,6 +21,27 @@ let OUT = process.env.APKSTART_PACK_OUT
   ? path.resolve(process.env.APKSTART_PACK_OUT)
   : path.join(ROOT, 'dist', FULL ? `ApkStart-v${PKG.version}-win64-full` : 'ApkStart-win64-portable');
 const ELECTRON_DIST = path.join(ROOT, 'node_modules', 'electron', 'dist');
+const ELECTRON_EXE = path.join(ELECTRON_DIST, 'electron.exe');
+// On npm 12+, dependency install scripts are blocked until explicitly approved.
+// Electron's postinstall downloads electron.exe; npm ci can appear successful
+// while leaving node_modules/electron/dist without a runnable Electron binary.
+// Check before moving an existing portable build aside.
+if (process.platform === 'win32' && (
+  !fs.existsSync(ELECTRON_EXE) ||
+  !fs.statSync(ELECTRON_EXE).isFile() ||
+  fs.statSync(ELECTRON_EXE).size === 0
+)) {
+  console.error('\n[ApkStart] Electron runtime is missing: ' + ELECTRON_EXE);
+  console.error('npm may have skipped electron\'s postinstall download.');
+  console.error('Run in PowerShell:');
+  console.error('  npm install-scripts approve electron electron-winstaller');
+  console.error('  npm rebuild electron electron-winstaller');
+  console.error('  npm run pack');
+  console.error('If rebuilding still fails, explicitly install Electron with:');
+  console.error('  node .\\node_modules\\electron\\install.js');
+  process.exit(1);
+}
+
 
 // Windows 上 fs.cpSync 复制「大量小文件 + 大镜像」的目录树时会偶发
 // EINPROGRESS（Node 错误地报成 "not enough space on the disk"，实际磁盘还剩上百 G）。
