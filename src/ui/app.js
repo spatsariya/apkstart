@@ -119,7 +119,7 @@ function openManual(payload) {
   return api.openManual(payload || { topic: 'overview' }).catch(() => null);
 }
 
-/** Automatic检测问题 → 对应教程。reason 只影响主进程的去重策略。 */
+/** 自动检测问题 → 对应教程。reason 只影响主进程的去重策略。 */
 function openManualForIssue(issue, reason = 'clicked') {
   if (!issue) return openManual({ topic: 'overview', reason });
   return openManual({
@@ -250,7 +250,7 @@ async function refreshStatus() {
       tag.className = 'brand-tag';
     } else if (s.needsSetup === 'boot') {
       dot.className = 'dot warn';
-      text.textContent = 'Runtime ready —— 安装 APK 或双击桌面图标会Automatic开机';
+      text.textContent = 'Runtime ready —— 安装 APK 或双击桌面图标会自动开机';
       tag.textContent = 'Ready to boot';
       tag.className = 'brand-tag';
     } else if (s.installing) {
@@ -345,7 +345,7 @@ function renderSetup(s) {
       : s.phase === 'booting' || s.vmStarting
         ? 'Booting Android…'
         : allDone0
-          ? '组件齐全 · Ready to boot（Open app时Automatic拉起）'
+          ? '组件齐全 · Ready to boot（Open app时自动拉起）'
           : `缺少 ${missing.join('、')}${accelOk ? '' : '（无硬件加速，将回退Software emulation）'}`;
     stateText.title = s.autoProfile || accel.note || hv.note || '';
   }
@@ -356,7 +356,7 @@ function renderSetup(s) {
   const booting = s.phase === 'booting';
 
   // 只保留一个步骤：下载、参数自适应、开机全部由「One-click setup」串起来，
-  // 且首次启动会在后台Automatic跑，用户不需要逐步点击。
+  // 且首次启动会在后台自动跑，用户不需要逐步点击。
   const allDone = !!(env.adb && env.adb.ok) && emuDone && imgDone;
   const left = [];
   if (!(env.adb && env.adb.ok)) left.push('adb tools');
@@ -370,12 +370,12 @@ function renderSetup(s) {
     done: allDone,
     busy: !!busy,
     desc: s.deviceOnline
-      ? `Android ${s.android || ''} Ready · 应用窗口会按屏幕Automatic适配`
+      ? `Android ${s.android || ''} Ready · 应用窗口会按屏幕自动适配`
       : booting
         ? 'Booting Android…'
         : allDone
-          ? '组件齐全，双击任意 APK 或桌面图标即会Automatic开机'
-          : `Missing: ${left.join('、')}；点下面「One-click setup」，会在后台一次装好并Automatic开机`,
+          ? '组件齐全，双击任意 APK 或桌面图标即会自动开机'
+          : `Missing: ${left.join('、')}；点下面「One-click setup」，会在后台一次装好并自动开机`,
     actions: s.deviceOnline
       ? '<button class="btn ghost sm" data-act="vmStop">Stop runtime</button>'
       : '',
@@ -389,9 +389,9 @@ function renderSetup(s) {
   const lf = s.lastFailure;
   const lastMsg = (lf && lf.diagnosis && lf.diagnosis.title)
     ? `Last startup failed: ${lf.diagnosis.title}`
-    : (s.diagnosis ? `上次启动Automatic诊断：${s.diagnosis.title}` : '');
+    : (s.diagnosis ? `上次启动自动诊断：${s.diagnosis.title}` : '');
   $('setupNote').textContent = lastMsg
-    || s.autoProfile || '全Automatic：无需选择镜像、无需启用加速、无需调内存';
+    || s.autoProfile || '全自动：无需选择镜像、无需启用加速、无需调内存';
 }
 
 function store_getDiskSize() {
@@ -429,7 +429,7 @@ async function deployAll() {
   if (state.setupBusy) return;
   setStepBusy('all', true);
   try {
-    // 一次调用把 adb / Engine / System image全装完，进度统一显示在唯一那一行
+    // 一次调用把 adb / 引擎 / System image全装完，进度统一显示在唯一那一行
     // 用户点「一键部署」属于明确的手动重试，绕过失败冷却
     const r = await api.autoDeploy({ force: true });
     if (!r || !r.ok) {
@@ -437,7 +437,7 @@ async function deployAll() {
       return;
     }
     await refreshStatus();
-    toast({ title: '组件Ready，正在Automatic开机…', body: 'First launch may take 1–3 minutes; subsequent launches are faster.', type: 'info' });
+    toast({ title: '组件Ready，正在自动开机…', body: 'First launch may take 1–3 minutes; subsequent launches are faster.', type: 'info' });
     const started = await api.runtimeStart();
     await refreshStatus();
     toast(started && started.ok
@@ -516,12 +516,12 @@ function friendlyInstallErrorText(msg) {
   if (/NO_MATCHING_ABIS/i.test(s)) {
     return /已切换到.*仍然安装失败|abiRetried/i.test(s)
       ? `${s}\nARM 兼容镜像已启用仍装不上，请到「设置 → 诊断与修复」导出诊断报告反馈。`
-      : `${s}\n这个包只有 ARM 库。程序会Automatic切到兼容镜像重装一次，请留意后续提示。`;
+      : `${s}\n这个包只有 ARM 库。程序会自动切到兼容镜像重装一次，请留意后续提示。`;
   }
   if (/INSTALL_FAILED_ALREADY_EXISTS|signatures do not match/i.test(s)) {
-    return `${s}\n同包名但签名不同（常见于从别的渠道装过）。在应用卡片右键「Uninstall」后再装。`;
+    return `${s}\n同包名但签名不同（常见于从别的渠道装过）。在应用卡片右键「卸载」后再装。`;
   }
-  if (/INSTALL_FAILED_VERSION_DOWNGRADE/i.test(s)) return `${s}\n已装版本更高，先在右键菜单里Uninstall再装。`;
+  if (/INSTALL_FAILED_VERSION_DOWNGRADE/i.test(s)) return `${s}\n已装版本更高，先在右键菜单里卸载再装。`;
   if (/ERR_FS_FILE_TOO_LARGE|greater than possible Buffer|Cannot allocate|ENOMEM|out of memory/i.test(s)) {
     return `${s}\n这个安装包过大或内存不足，解析被系统拒绝了。请确认磁盘与内存充足后重试；`
       + '仍失败请把安装包路径换成纯英文短路径（如 D:\\a.apk）。';
@@ -595,7 +595,7 @@ async function launchApp(pkg) {
   });
   const r = await api.launch(pkg);
   if (r.ok) {
-    // 应用有自己的窗口，主界面Automatic收起；这里只留一句提示，然后隐藏窗口
+    // 应用有自己的窗口，主界面自动收起；这里只留一句提示，然后隐藏窗口
     t.update({ title: 'Launched', body: 'App is running in its own window. Use the rotation control in the title bar.', type: 'ok' });
     setTimeout(t.dismiss, 1600);
     setTimeout(() => api.winHide(), 900);
@@ -619,7 +619,7 @@ async function createShortcut(pkg) {
 async function uninstall(pkg) {
   const app = state.apps.find((a) => a.package === pkg);
   if (!app) return;
-  const ok = window.confirm(`确定Uninstall「${app.label}」？\n\n应用数据会一并被清除，桌面快捷方式也会被删除。`);
+  const ok = window.confirm(`确定卸载「${app.label}」？\n\n应用数据会一并被清除，桌面快捷方式也会被删除。`);
   if (!ok) return;
   try {
     await api.uninstall(pkg);
@@ -916,7 +916,7 @@ function renderPreflight(res) {
           });
           if (r.already || !reboot) setTimeout(() => runPreflight().catch(() => {}), 1200);
         } else {
-          toast({ type: 'error', title: '没能Automatic完成', body: (r.error || r.note || '请按提示手动操作') });
+          toast({ type: 'error', title: '没能自动完成', body: (r.error || r.note || '请按提示手动操作') });
         }
       });
       wrap.append(btn);
@@ -1122,7 +1122,7 @@ async function refreshDataInfo() {
   const pending = Number(info.pendingGB) > 0
     ? ` 目标 ${info.configuredGB} GB 还没生效：安卓正在用快速启动差量盘，需要「重置安卓数据」后按新容量重建（会清空已装应用）。`
     : '';
-  el.textContent = `当前数据分区：${img}${auto ? '（Automatic）' : ''} · 所在磁盘剩余 ${free}。${pending}`
+  el.textContent = `当前数据分区：${img}${auto ? '（自动）' : ''} · 所在磁盘剩余 ${free}。${pending}`
     + '游戏提示「存储空间不足」就把这里调大后点「立即扩容」；能就地扩容时不丢已装应用。';
 }
 
@@ -1263,9 +1263,9 @@ function bindSettingsCategory() {
   switchSettingsCat(settingsCatState.cat);
 }
 
-/* ---------------- Automatic检测（Automatic debug）---------------- */
+/* ---------------- 自动检测（自动 debug）---------------- */
 
-/** Automatic检测的问题分类名（与 src/core/autodebug.js 的 CATEGORIES 对应） */
+/** 自动检测的问题分类名（与 src/core/autodebug.js 的 CATEGORIES 对应） */
 const DEBUG_CATS = [
   { id: 'runtime', name: '运行时' },
   { id: 'device', name: '设备连接' },
@@ -1353,7 +1353,7 @@ function updateCatBadges() {
   const issues = (autodebugLast && autodebugLast.issues) || [];
   document.querySelectorAll('#setNav .set-nav-badge').forEach((el) => {
     const cat = el.dataset.badge;
-    // Automatic检测的问题不一定都归属某个设置分类，只有设置类问题才在「诊断与修复」上打标
+    // 自动检测的问题不一定都归属某个设置分类，只有设置类问题才在「诊断与修复」上打标
     const n = cat === 'diag' ? issues.filter((i) => i.severity === 'error').length : 0;
     el.hidden = n === 0;
     el.textContent = n ? String(n) : '';
@@ -1394,7 +1394,7 @@ function bindAutodebug() {
       const r = await api.autodebugConfig({ auto: auto.checked }).catch(() => null);
       if (r) fillAutodebugSettings(r);
       toast({
-        title: auto.checked ? '已开启Automatic检测' : 'ClosedAutomatic检测',
+        title: auto.checked ? '已开启自动检测' : 'ClosedAutomatic检测',
         body: auto.checked ? '后台会定时检查，发现新问题才提醒' : '随时可以点「立即检测」手动跑一次',
         type: 'info',
       });
@@ -1450,7 +1450,7 @@ async function openSettings() {
 
   api.doctorProfile().then((r) => {
     if (r && r.text) $('autoProfileText').textContent = r.text;
-  }).catch(() => { $('autoProfileText').textContent = 'Automatic模式'; });
+  }).catch(() => { $('autoProfileText').textContent = '自动模式'; });
   // 显卡偏好：显示 Windows 是否真的应用了（支持但没生效时提示重启安卓）
   if ($('gpuPrefNote') && api.gpuStatus) {
     api.gpuStatus().then((g) => {
@@ -1572,7 +1572,7 @@ function bindUpdate() {
       try {
         const info = await api.updateCheck();
         renderUpdate(info);
-        if (info && info.hasUpdate) toast({ title: `发现新版本 ${info.tag}`, body: '点「立即更新」Automatic下载安装', type: 'info' });
+        if (info && info.hasUpdate) toast({ title: `发现新版本 ${info.tag}`, body: '点「立即更新」自动下载安装', type: 'info' });
         else if (info && info.ok !== false) toast({ title: '已是最新版本', body: `v${info.current}`, type: 'ok' });
       } catch (e) {
         $('updateState').textContent = `检查Failed: ${e.message}`;
@@ -1633,7 +1633,7 @@ function bindSettings() {
         type: 'ok',
         title: '已按这台机器配置好',
         body: `内存 ${Math.round((r.recommended.memoryMB || 0) / 1024)} GB / ${r.recommended.cores} 核 / ${r.recommended.renderSize}`
-          + (r.driverFile ? '；已生成驱动，下次开机会Automatic套用' : ''),
+          + (r.driverFile ? '；已生成驱动，下次开机会自动套用' : ''),
       });
       if (r.driverError) toast({ type: 'warn', title: '驱动没写成功', body: r.driverError });
       fillSettings(r.settings);
@@ -1671,7 +1671,7 @@ function bindSettings() {
 
   $('setAdbPath').addEventListener('change', (e) => save({ adbPath: e.target.value.trim() }));
   $('setSystemImage').addEventListener('change', (e) => save({ runtime: { isoPath: e.target.value.trim() } }));
-  // 内存 / 核心：填了具体值就关掉「Automatic」，填 0 又回到Automatic。
+  // 内存 / 核心：填了具体值就关掉「自动」，填 0 又回到自动。
   // 旧代码只写 memoryMB，而 overridesFromSettings 只在 autoMemory=false 时才认它，
   // 于是「手动填了内存」一直被忽略 —— 这是设置页最容易被当成“没用”的一项。
   $('setMemory').addEventListener('change', (e) => {
@@ -1730,7 +1730,7 @@ function bindSettings() {
   if ($('btnGrowData')) {
     $('btnGrowData').addEventListener('click', async () => {
       const gb = Number($('setDataGB').value) || 0;
-      if (!gb) { toast({ title: '先选一个容量', body: '「Automatic」表示由软件按磁盘余量决定，不需要扩容', type: 'info' }); return; }
+      if (!gb) { toast({ title: '先选一个容量', body: '「自动」表示由软件按磁盘余量决定，不需要扩容', type: 'info' }); return; }
       const { response } = await api.confirm({
         title: '立刻把安卓数据分区扩容？',
         message: `将把 /data 调整为 ${gb} GB（就地扩容，已装应用和存档都会保留）。`,
@@ -1806,7 +1806,7 @@ function bindSettings() {
   $('setPriorityMode').addEventListener('change', (e) => save({ engine: { priorityMode: e.target.value } }));
   const savePointer = async (patch) => {
     await save({ engine: patch });
-    // 立刻按当前窗口焦点重装/Uninstall钩子，不用等下次切窗口
+    // 立刻按当前窗口焦点重装/卸载钩子，不用等下次切窗口
     api.refreshPointerMapping().catch(() => {});
   };
   $('setMouseRightBack').addEventListener('change', (e) => savePointer({ mouseRightBack: e.target.checked }));
@@ -1866,7 +1866,7 @@ function bindSettings() {
     $('setAutoFullscreen').addEventListener('change', async (e) => {
       const on = e.target.value === 'on';
       state.settings = await api.setSettings({ display: { autoFullscreenOnLaunch: on } });
-      toast({ title: on ? '已开启Automatic全屏' : 'ClosedAutomatic全屏', body: '下次Open app时生效', type: 'ok' });
+      toast({ title: on ? '已开启自动全屏' : 'ClosedAutomatic全屏', body: '下次Open app时生效', type: 'ok' });
     });
   }
   if ($('setOrientationMode')) {
@@ -1887,7 +1887,7 @@ function bindSettings() {
       const on = e.target.value === 'on';
       state.settings = await api.setSettings({ display: { autoRotate: on } });
       toast({
-        title: on ? '已打开镜像Automatic旋转' : 'Closed镜像Automatic旋转',
+        title: on ? '已打开镜像自动旋转' : 'Closed镜像自动旋转',
         body: '下次Open app时写进安卓镜像。画面方向仍由屏幕方向策略决定，不受此开关影响。',
         type: 'ok',
       });
@@ -2026,7 +2026,7 @@ function bindSettings() {
 
   // 修复网络：安卓里联网页面一直黑屏（红果点「同意并继续」后整屏黑）时用。
   // 根因是虚拟机 /data 里的 Wi-Fi 配置坏了，wlan0 没起来、没有默认路由。
-  // Play Store 镜像不允许 root，只能整体重置 /data；应用清单保留，点开时会Automatic重装。
+  // Play Store 镜像不允许 root，只能整体重置 /data；应用清单保留，点开时会自动重装。
   $('btnRepairNetwork').addEventListener('click', async () => {
     const btn = $('btnRepairNetwork');
     btn.disabled = true;
@@ -2037,7 +2037,7 @@ function bindSettings() {
         message: '应用里需要联网的页面一直黑屏/转圈，通常是安卓虚拟机没有网络。',
         detail: '修复会按「代价从小到大」依次尝试：\n\n'
           + '1. 冷启动虚拟机（不加载快照）后等待联网 —— 不影响任何数据\n'
-          + '2. 仍不行才重置安卓数据 —— 应用清单保留、点开会Automatic重装，\n'
+          + '2. 仍不行才重置安卓数据 —— 应用清单保留、点开会自动重装，\n'
           + '   但应用内的登录态、追剧记录等会丢失\n\n'
           + '只影响当前 AVD，System image和本机 APK 缓存都不动。整个过程约 1–5 分钟。是否继续？',
         buttons: ['取消', '开始修复'],
@@ -2056,7 +2056,7 @@ function bindSettings() {
       }
       toast({
         title: '网络已恢复',
-        body: `${(r.network && r.network.ip) || '已联网'}${r.wiped ? '（为修复网络重置过安卓数据，点开应用会Automatic重装）' : '（未动你的数据）'}`,
+        body: `${(r.network && r.network.ip) || '已联网'}${r.wiped ? '（为修复网络重置过安卓数据，点开应用会自动重装）' : '（未动你的数据）'}`,
         type: 'ok',
       });
     } catch (e) {
@@ -2066,7 +2066,7 @@ function bindSettings() {
     }
   });
 
-  // 清理旧版本残留：扫描旧程序目录 / 失效Uninstall项 / 更新临时文件，确认后一次性清掉。
+  // 清理旧版本残留：扫描旧程序目录 / 失效卸载项 / 更新临时文件，确认后一次性清掉。
   $('btnLeftovers').addEventListener('click', async () => {
     const btn = $('btnLeftovers');
     btn.disabled = true;
@@ -2088,7 +2088,7 @@ function bindSettings() {
         type: 'warning',
         title: '清理旧版本残留？',
         message: `找到 ${items.length} 项残留，约 ${mb} MB：`,
-        detail: `${lines.join('\n')}\n\n只删除「旧版本程序目录 / 已失效的Uninstall项 / 更新临时文件」，`
+        detail: `${lines.join('\n')}\n\n只删除「旧版本程序目录 / 已失效的卸载项 / 更新临时文件」，`
           + '当前Running的版本和你的应用数据都不会动。',
         buttons: ['取消', '开始清理'],
         defaultId: 1,
@@ -2154,9 +2154,9 @@ function bindSettings() {
     }
   });
 
-  // 一键Uninstall ApkStart 本体（取消 .apk 关联 + 启动Uninstall程序；便携版手动删除）
+  // 一键卸载 ApkStart 本体（取消 .apk 关联 + 启动卸载程序；便携版手动删除）
   $('btnUninstall').addEventListener('click', async () => {
-    const ok = window.confirm('确定Uninstall ApkStart？\n\n将取消 .apk 文件关联并移除程序。此操作不可撤销。');
+    const ok = window.confirm('确定卸载 ApkStart？\n\n将取消 .apk 文件关联并移除程序。此操作不可撤销。');
     if (!ok) return;
     const btn = $('btnUninstall');
     btn.disabled = true;
@@ -2175,7 +2175,7 @@ function bindSettings() {
       toast({ title: 'Uninstall failed', body: r.error, type: 'error' });
       return;
     }
-    toast({ title: '正在Uninstall…', body: 'Uninstall程序Launched，ApkStart 即将退出', type: 'ok', sticky: true });
+    toast({ title: '正在卸载…', body: '卸载程序Launched，ApkStart 即将退出', type: 'ok', sticky: true });
   });
 
   // ARM 兼容镜像下载（带进度 toast）
@@ -2231,7 +2231,7 @@ function bindSettings() {
     if (!picked) return;
     await api.setSettings({ runtime: { dir: picked } });
     $('setRuntimeDir').value = picked;
-    toast({ title: '数据目录已更新', body: '请重启 ApkStart 使其生效（旧数据不会Automatic搬移）', type: 'ok', sticky: true });
+    toast({ title: '数据目录已更新', body: '请重启 ApkStart 使其生效（旧数据不会自动搬移）', type: 'ok', sticky: true });
   });
 
   // 安卓数据目录（AVD + 快照）：真正吃盘的那块，单独指到别的盘
@@ -2471,7 +2471,7 @@ function bindEvents() {
       body: friendlyInstallErrorText(raw),
       type: 'error',
     });
-    // 0.6.2：安装失败Automatic把对应章节推到用户面前（ARM / 签名 / 空间…）
+    // 0.6.2：安装失败自动把对应章节推到用户面前（ARM / 签名 / 空间…）
     openManualForError(raw, 'install-failed');
   });
   api.on('toast', (p) => toast({ title: p.message, type: p.type === 'error' ? 'error' : 'info' }));
@@ -2492,7 +2492,7 @@ function bindEvents() {
     if (wm && !wm.hidden) renderWelcomeTips();
   });
   api.on('update:progress', (p) => renderUpdateProgress(p));
-  // Automatic检测：主进程定时跑完后把结果推过来，设置页开着就直接刷新面板
+  // 自动检测：主进程定时跑完后把结果推过来，设置页开着就直接刷新面板
   api.on('autodebug:state', (r) => {
     if (r && r.running) {
       const txt = $('autodebugStateText');
@@ -2554,7 +2554,7 @@ function bindWelcome() {
 async function maybeShowWelcome() {
   const mask = $('welcomeMask');
   if (!mask) return;
-  // 冒烟截图时不要弹欢迎卡：否则每次Automatic截图都被它挡住主界面
+  // 冒烟截图时不要弹欢迎卡：否则每次自动截图都被它挡住主界面
   try { if ((await api.startupInfo()).smoke) return; } catch (_) { /* ignore */ }
   try { startupInfo = await api.startupInfo(); } catch (_) { startupInfo = null; }
   const cfg = (state.settings && state.settings.welcome) || {};
@@ -2566,7 +2566,7 @@ async function maybeShowWelcome() {
   $('welcomeHi').textContent = `${greetingOf(h)}，欢迎回来`;
   const ver = (startupInfo && startupInfo.version) || (state.status && state.status.version) || '';
   const ready = state.status && state.status.ready;
-  $('welcomeSub').textContent = `ApkStart${ver ? ` v${ver}` : ''} · ${ready ? '运行时就绪，点开即用' : '运行时会按需Automatic准备'}`;
+  $('welcomeSub').textContent = `ApkStart${ver ? ` v${ver}` : ''} · ${ready ? '运行时就绪，点开即用' : '运行时会按需自动准备'}`;
 
   const apps = (state.apps || []).length;
   const dev = $('statusDevice') ? $('statusDevice').textContent.trim() : '';
@@ -2596,7 +2596,7 @@ function renderWelcomeTips() {
     tips.push(`发现新版本 <b>${esc(lastUpdate.tag || '')}</b>，可在「设置 → 软件更新」一键更新`);
   }
   if (!apps) {
-    tips.push('把 APK 拖进窗口就能安装，装完会Automatic生成桌面图标');
+    tips.push('把 APK 拖进窗口就能安装，装完会自动生成桌面图标');
   } else {
     tips.push('双击应用卡片即可在独立窗口中运行，右上角可旋转 / 缩放 / 关闭');
   }
@@ -2693,7 +2693,7 @@ function renderEnvCheck(r) {
   });
 }
 
-/** 修复没成功：如实报错，并把对应教程Automatic打开（同一章节主进程 60 秒内只弹一次） */
+/** 修复没成功：如实报错，并把对应教程自动打开（同一章节主进程 60 秒内只弹一次） */
 function failFix(issue, ctl, body) {
   const msg = body || '请按教程手动处理';
   if (ctl && typeof ctl.update === 'function') ctl.update({ body: msg, type: 'error', sticky: true });
@@ -2733,7 +2733,7 @@ async function fixIssue(issue) {
           type: 'info',
           sticky: true,
         });
-        // Automatic提权走不通时，同步把图文教程打开，避免用户对着系统窗口不知道勾哪个
+        // 自动提权走不通时，同步把图文教程打开，避免用户对着系统窗口不知道勾哪个
         openManualForIssue(issue, 'fix-failed');
       } else if (r.cancelled) {
         t.update({ title: '已取消', body: r.error || '没有拿到管理员授权，硬件加速没有改动。', type: 'info', spinner: false });
@@ -2766,7 +2766,7 @@ async function fixIssue(issue) {
       toast(r.ok ? { title: '已清理残留锁文件', type: 'ok' } : { title: '清理失败', body: r.error, type: 'error' });
       break;
     }
-    // ---- Automatic检测（Automatic debug）新增的修复动作 ----
+    // ---- 自动检测（自动 debug）新增的修复动作 ----
     case 'restartRuntime': {
       // unauthorized / 引导卡死 / 孤儿锁的首选自愈动作：停一次再拉起来（走冷启动）
       const t = toast({ title: '正在重启安卓运行时…', body: '会重新引导一次，大约十几秒', type: 'info', sticky: true, spinner: true });
@@ -2794,7 +2794,7 @@ async function fixIssue(issue) {
       break;
     }
     case 'dataReset': {
-      // 扩容被差量盘挡住时必须重建：会清掉已装应用，所以只引导、不Automatic做。
+      // 扩容被差量盘挡住时必须重建：会清掉已装应用，所以只引导、不自动做。
       toast({
         title: '需要重建安卓数据分区',
         body: '到「设置 → 性能与资源」点「立即扩容」；提示需要重置时确认一次（会清空已装应用）。',
@@ -2809,7 +2809,7 @@ async function fixIssue(issue) {
       const s = (state.settings && state.settings.display) || {};
       const mode = s.orientationMode || 'auto';
       if (mode === 'auto') {
-        toast({ title: '当前是「Follow app」', body: '面板方向会按应用Automatic切换；若某个应用方向不对，可对它单独指定。', type: 'info' });
+        toast({ title: '当前是「Follow app」', body: '面板方向会按应用自动切换；若某个应用方向不对，可对它单独指定。', type: 'info' });
         break;
       }
       const wantLandscape = mode === 'landscape';
@@ -2887,7 +2887,7 @@ async function fixIssue(issue) {
       break;
     }
     default:
-      toast({ title: '暂不支持Automatic修复', body: issue.hint || '', type: 'info' });
+      toast({ title: '暂不支持自动修复', body: issue.hint || '', type: 'info' });
   }
   // 修复后重新自检，刷新横幅与状态
   setTimeout(selfCheck, 600);
