@@ -3014,7 +3014,9 @@ if (!gotLock) {
       // 用 screen-saver 级别确保不被模拟器窗口盖住（之前 alwaysOnTop 默认 level
       // 和 agent 的 SetForegroundWindow 抢 z-order，导致 splash 被顶到后面）
       splashWin.setAlwaysOnTop(true, 'screen-saver');
-      splashWin.loadFile(path.join(__dirname, 'ui', 'splash.html'));
+      splashWin.loadFile(path.join(__dirname, 'ui', 'splash.html'), {
+        query: { lang: store.getSettings().ui?.language || 'en-US' },
+      });
       splashWin.once('ready-to-show', () => { splashShownAt = Date.now(); splashWin.show(); });
       // IPC：版本号、首次运行标记、关闭
       ipcMain.handle('splash:version', () => app.getVersion());
