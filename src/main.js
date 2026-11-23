@@ -2094,12 +2094,12 @@ function registerIpc() {
     try {
       if (!doctor.vcRedistOk()) {
         issues.push({
-          code: 'vcRedist', severity: 'error', title: '缺少 VC++ 运行库（x64）',
+          code: 'vcRedist', severity: 'error', title: uiText('Missing Microsoft Visual C++ runtime (x64)', '缺少 VC++ 运行库（x64）'),
           // 这一条是实测 dll 文件不存在才报，可信。但要说清：0xC0000135 不等于
           // 一定是缺 VC++——商店版从 WindowsApps 起子进程也会报同码。装完若仍
           // 起不来，按内置手册 6.8 继续定位，别反复重装运行库。
-          hint: '实测系统缺少微软 VC++ 2015-2022（x64），安卓运行时依赖它。'
-            + '可一键安装；若装完仍报 0xC0000135，见内置手册 6.8——商店版还可能是子进程 DLL 路径问题。', fix: 'vcRedist',
+          hint: uiText('Microsoft Visual C++ 2015–2022 (x64) is missing; Android depends on it. ', '实测系统缺少微软 VC++ 2015-2022（x64），安卓运行时依赖它。')
+            + uiText('Install it using Repair. If error 0xC0000135 remains, see User Guide section 6.8; Store builds can also have DLL path issues.', '可一键安装；若装完仍报 0xC0000135，见内置手册 6.8——商店版还可能是子进程 DLL 路径问题。'), fix: 'vcRedist',
         });
       }
       accel = await runtime.provisioner.emulatorAccel().catch(() => ({ ok: false }));
@@ -2114,52 +2114,52 @@ function registerIpc() {
           ? {
             code: 'accel',
             severity: 'error',
-            title: '需要开启「Windows 虚拟机监控程序平台」',
-            hint: '没有它只能跑纯软件模拟，开机会慢到几分钟。'
+            title: uiText('Enable Windows Hypervisor Platform', '需要开启「Windows 虚拟机监控程序平台」'),
+            hint: uiText('Without it, Android uses slow software emulation and startup may take minutes. ', '没有它只能跑纯软件模拟，开机会慢到几分钟。')
               + MSIX_ACCEL_HINT
-              + '（商店版无法代你提权，需要你手动操作一次，之后重启。）',
+              + uiText(' (The Microsoft Store version cannot request elevation; enable the feature manually and restart.)', '（商店版无法代你提权，需要你手动操作一次，之后重启。）'),
             fix: 'virtualization',
           }
           : {
             code: 'accel',
             severity: 'warn',
-            title: '未启用硬件加速',
-            hint: `${accel.note || '将回退软件模拟（能跑但很慢）。'}`
-              + '点右侧「修复」会自动开启（需要管理员授权，可能要重启一次）；'
-              + '失败时会自动改装 AEHD 驱动。',
+            title: uiText('Hardware acceleration disabled', '未启用硬件加速'),
+            hint: `${accel.note || uiText('Using software emulation (slow). ', '将回退软件模拟（能跑但很慢）。')}`
+              + uiText('Select Repair to enable hardware acceleration (administrator permission and a restart may be required). ', '点右侧「修复」会自动开启（需要管理员授权，可能要重启一次）；')
+              + uiText('If that fails, ApkStart can try the AEHD driver.', '失败时会自动改装 AEHD 驱动。'),
             fix: 'virtualization',
           });
       }
       free = doctor.freeDiskMB(runtime.provisioner.paths().root);
       if (free && free < 8192) {
         issues.push({
-          code: 'disk', severity: free < 2048 ? 'error' : 'warn', title: '运行时磁盘空间紧张',
-          hint: `「${runtime.provisioner.paths().root}」所在盘仅剩 ${free} MB，运行时与镜像可能撑爆硬盘。`, fix: 'disk',
+          code: 'disk', severity: free < 2048 ? 'error' : 'warn', title: uiText('Low disk space for Android runtime', '运行时磁盘空间紧张'),
+          hint: uiText(`Only ${free} MB free on the drive containing ${runtime.provisioner.paths().root}. Runtime files and images may fill the disk.`, `「${runtime.provisioner.paths().root}」所在盘仅剩 ${free} MB，运行时与镜像可能撑爆硬盘。`), fix: 'disk',
         });
       }
       const rtDir = runtime.provisioner.paths().root;
       if (!doctor.isAsciiPath(rtDir)) {
         issues.push({
-          code: 'pathRuntime', severity: 'warn', title: '运行时目录含中文/特殊字符',
-          hint: '部分运行时组件对中文路径敏感，可能引发启动失败。建议改到纯英文目录。', fix: 'path',
+          code: 'pathRuntime', severity: 'warn', title: uiText('Runtime path contains unsupported characters', '运行时目录含中文/特殊字符'),
+          hint: uiText('Some Android runtime components cannot handle non-ASCII paths. Move the runtime to a folder with an ASCII-only path.', '部分运行时组件对中文路径敏感，可能引发启动失败。建议改到纯英文目录。'), fix: 'path',
         });
       }
       const env = await runtime.provisioner.checkEnv().catch(() => ({}));
       if (!env.adb || !env.adb.ok) {
-        issues.push({ code: 'adb', severity: 'error', title: 'adb 工具链缺失', hint: '无法连接安卓运行时。', fix: 'deploy' });
+        issues.push({ code: 'adb', severity: 'error', title: uiText('adb tools missing', 'adb 工具链缺失'), hint: uiText('Cannot connect to Android runtime.', '无法连接安卓运行时。'), fix: 'deploy' });
       }
       if (!env.emulator || !env.emulator.ok) {
-        issues.push({ code: 'emulator', severity: 'error', title: '运行时引擎未安装', hint: '需要先部署运行时引擎（约 440MB）。', fix: 'deploy' });
+        issues.push({ code: 'emulator', severity: 'error', title: uiText('Android emulator engine not installed', '运行时引擎未安装'), hint: uiText('Install the emulator engine first (about 440 MB).', '需要先部署运行时引擎（约 440MB）。'), fix: 'deploy' });
       }
       if (!env.sysimg || !env.sysimg.ok) {
-        issues.push({ code: 'sysimg', severity: 'warn', title: '系统镜像未就绪', hint: '需要先下载 Android 系统镜像（约 1.5GB）。', fix: 'deploy' });
+        issues.push({ code: 'sysimg', severity: 'warn', title: uiText('Android system image is not ready', '系统镜像未就绪'), hint: uiText('Download the Android system image first (about 1.5 GB).', '需要先下载 Android 系统镜像（约 1.5GB）。'), fix: 'deploy' });
       }
       // 残留锁文件：会让下一次启动被判定为「AVD 已被占用」而 FATAL
       const avdHome = runtime.provisioner.paths().avdHome;
       let locked = false;
       try { for (const f of fs.readdirSync(avdHome)) { if (/\.lock$/i.test(f)) { locked = true; break; } } } catch (_) { /* ignore */ }
       if (locked) {
-        issues.push({ code: 'lock', severity: 'warn', title: '检测到上次残留的锁文件', hint: '可能导致下一次启动被判定为「AVD 已被占用」。', fix: 'lock' });
+        issues.push({ code: 'lock', severity: 'warn', title: uiText('Stale emulator lock files detected', '检测到上次残留的锁文件'), hint: uiText('These files can prevent Android from starting because the virtual device appears busy.', '可能导致下一次启动被判定为「AVD 已被占用」。'), fix: 'lock' });
       }
     } catch (_) { /* 自检失败不阻断使用 */ }
     return { issues, accel, free };
