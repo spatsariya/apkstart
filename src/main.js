@@ -10,6 +10,18 @@ const path = require('path');
 const store = require('./core/store');
 // Translate native Windows menus and dialogs. Additional imported locales use English fallback.
 const uiText = (english, chinese) => store.getSettings().ui?.language === 'zh-CN' ? chinese : english;
+
+const nativeEnglish = require('./core/interface-en.json').translations;
+const nativePhrases = Object.entries(nativeEnglish).filter(([key]) => key.length >= 2).sort((a,b) => b[0].length - a[0].length);
+function translateDisplayText(value) {
+  if (typeof value !== 'string' || store.getSettings().ui?.language === 'zh-CN') return value;
+  let out = nativeEnglish[value] || value;
+  if (/[\u3400-\u9fff]/.test(out)) {
+    for (const [zh, en] of nativePhrases) if (out.includes(zh)) out = out.split(zh).join(en);
+  }
+  return out;
+}
+
 const { Runtime } = require('./core/engine');
 const { Installer } = require('./core/installer');
 const { Sharer } = require('./core/sharer');
@@ -997,12 +1009,25 @@ function notify(title, body) {
   if (store.getSettings().notifyOnInstall === false) return;
   try {
     const { Notification } = require('electron');
-    if (Notification.isSupported()) new Notification({ title, body, icon: nativeImage.createFromBuffer(ICON_PNG) }).show();
+    if (Notification.isSupported()) new Notification({
+      title: translateDisplayText(title), body: translateDisplayText(body),
+      icon: nativeImage.createFromBuffer(ICON_PNG),
+    }).show();
   } catch (_) { /* ignore */ }
 }
 
 function send(channel, payload) {
-  if (mainWindow && !mainWindow.isDestroyed()) mainWindow.webContents.send(channel, payload);
+  if (!mainWindow || mainWindow.isDestroyed()) return;
+  let output = payload;
+  if (channel === 'runtime:log' && typeof payload === 'string') {
+    output = translateDisplayText(payload);
+  } else if (['toast', 'install:progress', 'update:progress'].includes(channel) && payload && typeof payload === 'object') {
+    output = { ...payload };
+    for (const key of ['title', 'message', 'body']) {
+      if (typeof output[key] === 'string') output[key] = translateDisplayText(output[key]);
+    }
+  }
+  mainWindow.webContents.send(channel, output);
 }
 
 // ---------------- 自动检测（自动 debug）----------------
