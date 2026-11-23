@@ -2229,10 +2229,10 @@ function registerIpc() {
   ipcMain.handle('app:confirm', async (_e, opts = {}) => {
     const { response } = await dialog.showMessageBox(mainWindow || undefined, {
       type: opts.type || 'question',
-      title: opts.title || '确认',
+      title: opts.title || uiText('Confirm', '确认'),
       message: opts.message || '',
       detail: opts.detail || '',
-      buttons: ['取消', opts.okLabel || '确定'],
+      buttons: [uiText('Cancel', '取消'), opts.okLabel || uiText('Confirm', '确定')],
       defaultId: 1,
       cancelId: 0,
       noLink: true,
@@ -2320,15 +2320,15 @@ function registerIpc() {
     const preview = await runtime.cleanup(pass);
     const { response } = await dialog.showMessageBox(mainWindow, {
       type: 'warning',
-      buttons: ['取消', `清理 ${preview.candidates.length} 项`],
+      buttons: [uiText('Cancel', '取消'), uiText(`Remove ${preview.candidates.length} items`, `清理 ${preview.candidates.length} 项`)],
       defaultId: 0,
       cancelId: 0,
-      title: '确认清理运行时缓存',
-      message: `将释放约 ${(preview.candidates.reduce((n, c) => n + c.size, 0) / 1048576).toFixed(0)} MB`,
+      title: uiText('Confirm runtime cache cleanup', '确认清理运行时缓存'),
+      message: uiText(`About ${(preview.candidates.reduce((n, c) => n + c.size, 0) / 1048576).toFixed(0)} MB will be freed`, `将释放约 ${(preview.candidates.reduce((n, c) => n + c.size, 0) / 1048576).toFixed(0)} MB`),
       detail: (opts.includeSnapshots
-        ? '会先停止运行时，再删除旧镜像、当前 AVD 的快速启动快照、锁文件和非活动 AVD 的缓存。已安装的应用本身保留（只清快照），'
-        : '只删除旧镜像、旧快照、锁文件和非活动 AVD 的缓存，已安装的应用会保留。')
-        + '此操作不可撤销，建议先导出诊断报告。',
+        ? uiText('The runtime will stop. Old images, the current quickboot snapshot, lock files and inactive AVD caches will be deleted. Installed apps remain.', '会先停止运行时，再删除旧镜像、当前 AVD 的快速启动快照、锁文件和非活动 AVD 的缓存。已安装的应用本身保留（只清快照），')
+        : uiText('Only old images, snapshots, lock files and inactive AVD caches will be deleted. Installed apps remain.', '只删除旧镜像、旧快照、锁文件和非活动 AVD 的缓存，已安装的应用会保留。'))
+        + uiText(' This cannot be undone. Consider exporting a diagnostic report first.', '此操作不可撤销，建议先导出诊断报告。'),
     });
     if (response !== 1) return { ...preview, cancelled: true };
     return runtime.cleanup({ apply: true, aggressive: !!opts.aggressive, includeSnapshots: !!opts.includeSnapshots });
