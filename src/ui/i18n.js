@@ -155,6 +155,7 @@
     locale = next;
     localStorage.setItem(LOCALE_KEY,locale);
     document.documentElement.lang = locale;
+    document.documentElement.dir = /^(ar|he|fa|ur)(?:-|$)/i.test(locale) ? 'rtl' : 'ltr';
     walk(document.body,true);
     fillSelector(document.getElementById('setUiLanguage'));
     return true;
@@ -185,6 +186,8 @@
 
   window.ApkStartI18n = { available, setLocale, getLocale:()=>locale, fillSelector, installPack, translate };
   function startup() {
+    document.documentElement.lang = locale;
+    document.documentElement.dir = /^(ar|he|fa|ur)(?:-|$)/i.test(locale) ? 'rtl' : 'ltr';
     walk(document.body);
     observer.observe(document.body,{ subtree:true,childList:true,characterData:true,attributes:true,
       attributeFilter:['title','placeholder','aria-label'] });
