@@ -9,8 +9,9 @@ const ROOT = path.join(__dirname, '..');
 const read = (file) => fs.readFileSync(path.join(ROOT, file), 'utf8');
 
 // The localization module must work in Electron without remote services or npm i18n packages.
-function createEngine(persisted = new Map()) {
-  const window = { alert() {}, confirm() { return true; }, prompt() { return null; } };
+function createEngine(persisted = new Map(), windowLanguage = null) {
+  const window = { alert() {}, confirm() { return true; }, prompt() { return null; },
+    location: { search: windowLanguage ? '?lang=' + encodeURIComponent(windowLanguage) : '' } };
   const document = {
     readyState: 'loading',
     documentElement: { lang: 'en-US' },
@@ -27,6 +28,7 @@ function createEngine(persisted = new Map()) {
     Node: { TEXT_NODE: 3, ELEMENT_NODE: 1 },
     MutationObserver: class {},
     queueMicrotask: (fn) => fn(),
+    URLSearchParams,
   };
   vm.runInNewContext(read('src/ui/i18n.js'), sandbox, { filename: 'src/ui/i18n.js' });
   return { t: window.ApkStartI18n, document, persisted };
@@ -62,6 +64,7 @@ assert.ok(t.available().some((language) => language.locale === 'fr-FR'));
 const restarted = createEngine(persisted).t;
 assert.equal(restarted.getLocale(), 'fr-FR');
 assert.equal(restarted.translate('Settings'), 'Paramètres');
+assert.equal(createEngine(persisted, 'zh-CN').t.getLocale(), 'zh-CN', 'Native auxiliary window locale overrides localStorage');
 assert.throws(() => restarted.installPack({ locale: 'invalid locale', translations: {} }), /Invalid language pack/);
 
 const html = read('src/ui/index.html');
